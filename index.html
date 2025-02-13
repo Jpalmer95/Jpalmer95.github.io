@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jonathan Korstad - AI Engineer & Coffee Shop Owner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --blue-accent: #007bff;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --card-bg: #1e1e1e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 2rem auto;
+            display: block;
+            border: 3px solid var(--blue-accent);
+        }
+
+        .social-links {
+            margin: 1rem 0;
+        }
+
+        .social-links a {
+            color: var(--blue-accent);
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: var(--blue-accent);
+            margin-bottom: 1rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-item {
+            background-color: rgba(0, 123, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .coffee-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .coffee-img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--blue-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .coffee-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="your-photo.jpg" alt="Jonathan Korstad" class="profile-img">
+            <h1>Jonathan Korstad, CPWA</h1>
+            <p>Senior Accessibility Analyst | AI Engineer</p>
+            <div class="social-links">
+                <a href="https://gist.github.com/Jpalmer95">GitHub</a>
+                <a href="https://huggingface.co/jkorstad">HuggingFace</a>
+                <a href="mailto:jpkorstad@gmail.com">Email</a>
+            </div>
+        </header>
+
+        <section class="section">
+            <h2>About Me</h2>
+            <p>I'm a Senior Accessibility Analyst at Visa and an AI Engineer with a passion for deep reinforcement learning and accessibility solutions. With a background in both healthcare and technology, I bring a unique perspective to solving complex problems. I'm also the proud founder of Kynda Coffee, where my entrepreneurial spirit meets my love for quality coffee.</p>
+        </section>
+
+        <section class="section">
+            <h2>Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item">Deep Reinforcement Learning</div>
+                <div class="skill-item">PyTorch</div>
+                <div class="skill-item">Python</div>
+                <div class="skill-item">LangChain</div>
+                <div class="skill-item">Unreal Engine & Unity</div>
+                <div class="skill-item">Hugging Face Ecosystem</div>
+                <div class="skill-item">Accessibility Analysis</div>
+                <div class="skill-item">Entrepreneurship</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Experience</h2>
+            <h3>Senior Accessibility Analyst at Visa</h3>
+            <p>Created innovative accessibility solutions and supported global design teams in enhancing product accessibility.</p>
+            
+            <h3>Founder/Owner of Kynda Coffee</h3>
+            <p>Founded and successfully launched a coffee business, managing all aspects from operations to leadership.</p>
+        </section>
+
+        <section class="section coffee-section">
+            <div>
+                <h2>Kynda Coffee</h2>
+                <p>Founded in October 2019, Kynda Coffee represents my entrepreneurial journey in the specialty coffee industry. We focus on quality, sustainability, and community.</p>
+                <a href="#" class="btn">Order Coffee Beans</a>
+            </div>
+            <div>
+                <img src="coffee-shop.jpg" alt="Kynda Coffee Shop" class="coffee-img">
+            </div>
+        </section>
+    </div>
+</body>
+</html>
