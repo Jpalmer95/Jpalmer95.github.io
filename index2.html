@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jonathan Korstad - AI Engineer & Coffee Shop Owner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --blue-accent: #007bff;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --card-bg: #1e1e1e;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        ul ul {
+            padding-left: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 2rem auto;
+            display: block;
+            border: 3px solid var(--blue-accent);
+        }
+        .social-links {
+            margin: 1rem 0;
+        }
+        .social-links a {
+            color: var(--blue-accent);
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            margin: 0 1rem;
+        }
+        .contact-info {
+            margin: 1rem 0;
+            color: var(--text-secondary);
+        }
+        .section {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            color: var(--blue-accent);
+            margin-bottom: 1rem;
+        }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .skill-item {
+            background-color: rgba(0, 123, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        .coffee-section {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+        .coffee-logo {
+            width: 200px;
+            height: 200px;
+            background-color: white;
+            border-radius: 50%;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        .coffee-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--blue-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .coffee-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://github.com/Jpalmer95/Jpalmer95.github.io/blob/main/Jonathan%20Korstad%20Headshot.png?raw=true" alt="Jonathan Korstad" class="profile-img">
+            <h1>Jonathan Korstad, CPWA</h1>
+            <p>Senior Accessibility Analyst | AI Engineer</p>
+            <div class="social-links">
+                <a href="https://github.com/Jpalmer95">GitHub</a>
+                <a href="https://huggingface.co/jkorstad">HuggingFace</a>
+                <a href="https://x.com/JonathanKorstad">X</a>
+            </div>
+            <div class="contact-info">
+                <p>Austin, TX 78727 • jpkorstad@gmail.com • +1 (512) 767-5662</p>
+            </div>
+        </header>
+        <section class="section">
+            <h2>About Me</h2>
+            <p>Results-driven AI Engineer with expertise in developing scalable AI agents and tools for automation, infrastructure management, and large-scale data processing. Proficient in building intelligent systems using deep reinforcement learning and frameworks like LangChain and Smolagents to streamline operations and resolve complex queries. Experienced in cross-functional collaboration to translate business needs into efficient software solutions, with a focus on observability, distributed systems, and innovative problem-solving. With a background in technology, healthcare, and construction, I bring a unique perspective to solving complex problems. I'm also the proud founder of Kynda Coffee, where my entrepreneurial spirit meets my love for specialty coffee. Eager to contribute to cutting-edge AI platforms by designing AI-driven infrastructure tools for VMs, Kubernetes, bare metal, and edge computing.</p>
+            <br />
+            <p>Current Interests and Hobbies: Deep Reinforcement Learning (Online and Offline), Generative 3D and Multimodal Models, Generative Audio Training, Accessibility, Agents, Computer Vision, XR, Game Development, gaming, and lifelong learning in emerging technologies!</p>
+        </section>
+        <section class="section">
+            <h2>Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item">Deep Reinforcement Learning</div>
+                <div class="skill-item">Deep Reinforcement Learning (Online and Offline) for agent training on any task</div>
+                <div class="skill-item">PyTorch</div>
+                <div class="skill-item">PyTorch, Learning JAX</div>
+                <div class="skill-item">Generative 3D and Multimodal models</div>
+                <div class="skill-item">SolveIt With Code & Fast.ai</div>
+                <div class="skill-item">Python, C++, Flutter, React, React Native</div>
+                <div class="skill-item">Python, C++, Flutter, Learning Rust</div>
+                <div class="skill-item">HTML, CSS, JavaScript</div>
+                <div class="skill-item">LangChain</div>
+                <div class="skill-item">LangChain, LlamaIndex, Smolagents</div>
+                <div class="skill-item">Unreal Engine 5 & Unity</div>
+                <div class="skill-item">Godot, Unreal Engine 5 & Unity</div>
+                <div class="skill-item">Hugging Face Ecosystem</div>
+                <div class="skill-item">Digital Accessibility</div>
+                <div class="skill-item">Rapid Learning and Creative Problem Solving</div>
+                <div class="skill-item">Rapid Learning and Creative Problem Solving To Get The Job Done</div>
+                <div class="skill-item">Entrepreneurship</div>
+                <div class="skill-item">Critical & Creative Independent Thinking</div>
+                <div class="skill-item">Strategy and Innovation</div>
+                <div class="skill-item">Cross Functional Generalist with a love for lifelong learning</div>
+                <div class="skill-item">Cross Functional Generalist Leader with a love for lifelong learning</div>
+                <div class="skill-item">Hands on training, testing, and critical problem solving in novel environments for large scale production</div>
+                <div class="skill-item">Isaac Sim</div>
+                <div class="skill-item">Scikit-Learn, Numpy</div>
+                <div class="skill-item">Generative Audio Training</div>
+            </div>
+        </section>
+        <section class="section">
+            <h2>Experience</h2>
+            <h3>(2022 - Current) - Senior Accessibility Analyst at Visa</h3>
+            <p>Invented a novel secure PIN entry method for touch-screen interfaces, meeting industry standards and enabling independent use for unsighted users across global payment systems serving millions.</p>
+            <p>Collaborated with ⅔ of Visa’s Global Design teams to integrate accessibility into the full product lifecycle, including testing and revising the Visa Product Design System (VPDS) in React, Flutter, and Angular for scalable, multi-language deployments.</p>
+            <p>Automated auditing and remediation processes to enhance efficiency, drawing on AI tools for large-scale code analysis and configuration management.</p>
+            <br />
+            <h3>(2020 - Current) - Founder/Owner of Kynda Coffee</h3>
+            <p>Bootstrapped and scaled a self-funded business from concept to full operations, managing infrastructure needs including custom software for inventory tracking and operational automation.</p>
+            <p>Led a self-sufficient team through rapid problem-solving in diverse environments, optimizing processes for efficiency and growth amid resource constraints.</p>
+            <br />
+            <h3>(2021-2022) - Accessibility Analyst at MicroAssist</h3>
+            <p>SME - Testing, auditing, and code remediation for clients to mitigate accessibility issues.</p>
+        </section>
+        <section class="section">
+            <h2>Projects (Partial List)</h2>
+            <p>Hugging Face Reinforcement Learning Course Projects (All at Honors Level): Optimized agents for tasks including LunarLander-v2 (stable landing from variable states), “Huggy” the Dog Fetch agent, FrozenLake game optimization, Space Invaders Agent Score Maximizer, PixelCopter Agent, CartPole balancing agent, SnowballTarget agent, Pyramids (rapidly search for and touch the correct cube) agent, multi-agent Soccer duos (distributed training), VizDOOM health gathering (real-time decision-making on complex terrains), and environments in Panda Gym/PyBullet—demonstrating scalable AI for automation and infrastructure challenges.</p>
+            <p>Built custom AI agents using Smolagents and LangChain for query resolution and configuration automation, handling large-scale data volumes to extract actionable insights.</p>
+            <p>Explored generative models for code generation and documentation automation, streamlining development in simulated distributed systems.</p>
+        </section>
+        <section class="section">
+            <h2>Education & Certificates</h2>
+            <ul>
+                <li>(2024) University of Texas at Austin - Post Graduate Degree in Artificial Intelligence & Machine Learning</li>
+                <li>(2023-2024) Fast.ai/Answer.ai - SolveIt With Code & Practical Deep Learning for Coders courses</li>
+                <li>(2019) Texas A&M University - Bachelors in Science - Pre-med (Kinesiology) - Self-funded debt-free</li>
+                <li>(2021-2024) - Hugging Face Deep Reinforcement Learning Course, Hugging Face NLP Certificate, Hugging Face 3D Certificate, Hugging Face ML for Games Certificate, Advanced AI Transformers for Computer Vision, Deep Learning A-Z & Machine Learning A-Z, LangChain - Develop LLM powered applications, A-Z Hands-On Tableau Training for Data Science, IAAP CPACC & WAS (CPWA), and many more spanning networking, security, coding, devops, cloud, game development etc...</li>
+            </ul>
+        </section>
+        <section class="section coffee-section">
+            <div>
+                <h2>Kynda Coffee</h2>
+                <p>Founded October 2019, Kynda Coffee represents my entrepreneurial journey in the specialty coffee industry. We focus on quality coffee, scratch baked goods, and community.</p>
+                <a href="https://www.kyndacoffee.com/shop" class="btn">Order Coffee Beans</a>
+            </div>
+            <a href="https://www.kyndacoffee.com">
+                <div class="coffee-logo">
+                    <img src="https://github.com/Jpalmer95/Jpalmer95.github.io/blob/main/Kynda_Coffee_Logo.png?raw=true" alt="Kynda Coffee Logo">
+                </div>
+            </a>
+        </section>
+    </div>
+</body>
+</html>
