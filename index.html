@@ -1,214 +1,503 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jonathan Korstad - AI Engineer & Coffee Shop Owner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --dark-bg: #121212;
-            --blue-accent: #007bff;
-            --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-            --card-bg: #1e1e1e;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-        ul ul {
-            padding-left: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        .profile-img {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 2rem auto;
-            display: block;
-            border: 3px solid var(--blue-accent);
-        }
-        .social-links {
-            margin: 1rem 0;
-        }
-        .social-links a {
-            color: var(--blue-accent);
-            text-decoration: underline;
-            text-decoration-thickness: 2px;
-            margin: 0 1rem;
-        }
-        .contact-info {
-            margin: 1rem 0;
-            color: var(--text-secondary);
-        }
-        .section {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-        .section h2 {
-            color: var(--blue-accent);
-            margin-bottom: 1rem;
-        }
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        .skill-item {
-            background-color: rgba(0, 123, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-        }
-        .coffee-section {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 2rem;
-            align-items: center;
-        }
-        .coffee-logo {
-            width: 200px;
-            height: 200px;
-            background-color: white;
-            border-radius: 50%;
-            padding: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-        }
-        .coffee-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background-color: var(--blue-accent);
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 1rem;
-        }
-        @media (max-width: 768px) {
-            .coffee-section {
-                grid-template-columns: 1fr;
+    <title>Jonathan Korstad - AI Engineer & Entrepreneur</title>
+    <meta name="description" content="Portfolio of Jonathan Korstad - Senior Accessibility Analyst, AI Engineer, and Founder of Kynda Coffee.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#121212',
+                            card: '#1e1e1e',
+                            lighter: '#2d2d2d'
+                        },
+                        accent: {
+                            DEFAULT: '#007bff',
+                            hover: '#0056b3',
+                            light: 'rgba(0, 123, 255, 0.1)'
+                        },
+                        text: {
+                            primary: '#ffffff',
+                            secondary: '#b3b3b3'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
             }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #007bff; 
+        }
+        
+        .glass-card {
+            background: rgba(30, 30, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #007bff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .skill-tag {
+            transition: all 0.3s ease;
+        }
+        .skill-tag:hover {
+            background-color: #007bff;
+            color: white;
+            transform: translateY(-2px);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header class="header">
-            <img src="https://github.com/Jpalmer95/Jpalmer95.github.io/blob/main/Jonathan%20Korstad%20Headshot.png?raw=true" alt="Jonathan Korstad" class="profile-img">
-            <h1>Jonathan Korstad, CPWA</h1>
-            <p>Senior Accessibility Analyst | AI Engineer</p>
-            <div class="social-links">
-                <a href="https://github.com/Jpalmer95">GitHub</a>
-                <a href="https://huggingface.co/jkorstad">HuggingFace</a>
-                <a href="https://x.com/JonathanKorstad">X</a>
-            </div>
-            <div class="contact-info">
-                <p>Austin, TX 78727 • jpkorstad@gmail.com • +1 (512) 767-5662</p>
-            </div>
-        </header>
-        <section class="section">
-            <h2>About Me</h2>
-            <p>Results-driven AI Engineer with expertise in developing scalable AI agents and tools for automation, infrastructure management, and large-scale data processing. Proficient in building intelligent systems using deep reinforcement learning and frameworks like LangChain and Smolagents to streamline operations and resolve complex queries. Experienced in cross-functional collaboration to translate business needs into efficient software solutions, with a focus on observability, distributed systems, and innovative problem-solving. With a background in technology, healthcare, and construction, I bring a unique perspective to solving complex problems. I'm also the proud founder of Kynda Coffee, where my entrepreneurial spirit meets my love for specialty coffee. Eager to contribute to cutting-edge AI platforms by designing AI-driven infrastructure tools for VMs, Kubernetes, bare metal, and edge computing.</p>
-            <br />
-            <p>Current Interests and Hobbies: Deep Reinforcement Learning (Online and Offline), Generative 3D and Multimodal Models, Generative Audio Training, Accessibility, Agents, Computer Vision, XR, Game Development, gaming, and lifelong learning in emerging technologies!</p>
-        </section>
-        <section class="section">
-            <h2>Skills</h2>
-            <div class="skills-grid">
-                <div class="skill-item">Deep Reinforcement Learning</div>
-                <div class="skill-item">Deep Reinforcement Learning (Online and Offline) for agent training on any task</div>
-                <div class="skill-item">PyTorch</div>
-                <div class="skill-item">PyTorch, Learning JAX</div>
-                <div class="skill-item">Generative 3D and Multimodal models</div>
-                <div class="skill-item">SolveIt With Code & Fast.ai</div>
-                <div class="skill-item">Python, C++, Flutter, React, React Native</div>
-                <div class="skill-item">Python, C++, Flutter, Learning Rust</div>
-                <div class="skill-item">HTML, CSS, JavaScript</div>
-                <div class="skill-item">LangChain</div>
-                <div class="skill-item">LangChain, LlamaIndex, Smolagents</div>
-                <div class="skill-item">Unreal Engine 5 & Unity</div>
-                <div class="skill-item">Godot, Unreal Engine 5 & Unity</div>
-                <div class="skill-item">Hugging Face Ecosystem</div>
-                <div class="skill-item">Digital Accessibility</div>
-                <div class="skill-item">Rapid Learning and Creative Problem Solving</div>
-                <div class="skill-item">Rapid Learning and Creative Problem Solving To Get The Job Done</div>
-                <div class="skill-item">Entrepreneurship</div>
-                <div class="skill-item">Critical & Creative Independent Thinking</div>
-                <div class="skill-item">Strategy and Innovation</div>
-                <div class="skill-item">Cross Functional Generalist with a love for lifelong learning</div>
-                <div class="skill-item">Cross Functional Generalist Leader with a love for lifelong learning</div>
-                <div class="skill-item">Hands on training, testing, and critical problem solving in novel environments for large scale production</div>
-                <div class="skill-item">Isaac Sim</div>
-                <div class="skill-item">Scikit-Learn, Numpy</div>
-                <div class="skill-item">Generative Audio Training</div>
-            </div>
-        </section>
-        <section class="section">
-            <h2>Experience</h2>
-            <h3>(2022 - Current) - Senior Accessibility Analyst at Visa</h3>
-            <p>Invented a novel secure PIN entry method for touch-screen interfaces, meeting industry standards and enabling independent use for unsighted users across global payment systems serving millions.</p>
-            <p>Collaborated with ⅔ of Visa’s Global Design teams to integrate accessibility into the full product lifecycle, including testing and revising the Visa Product Design System (VPDS) in React, Flutter, and Angular for scalable, multi-language deployments.</p>
-            <p>Automated auditing and remediation processes to enhance efficiency, drawing on AI tools for large-scale code analysis and configuration management.</p>
-            <br />
-            <h3>(2020 - Current) - Founder/Owner of Kynda Coffee</h3>
-            <p>Bootstrapped and scaled a self-funded business from concept to full operations, managing infrastructure needs including custom software for inventory tracking and operational automation.</p>
-            <p>Led a self-sufficient team through rapid problem-solving in diverse environments, optimizing processes for efficiency and growth amid resource constraints.</p>
-            <br />
-            <h3>(2021-2022) - Accessibility Analyst at MicroAssist</h3>
-            <p>SME - Testing, auditing, and code remediation for clients to mitigate accessibility issues.</p>
-        </section>
-        <section class="section">
-            <h2>Projects (Partial List)</h2>
-            <p>Hugging Face Reinforcement Learning Course Projects (All at Honors Level): Optimized agents for tasks including LunarLander-v2 (stable landing from variable states), “Huggy” the Dog Fetch agent, FrozenLake game optimization, Space Invaders Agent Score Maximizer, PixelCopter Agent, CartPole balancing agent, SnowballTarget agent, Pyramids (rapidly search for and touch the correct cube) agent, multi-agent Soccer duos (distributed training), VizDOOM health gathering (real-time decision-making on complex terrains), and environments in Panda Gym/PyBullet—demonstrating scalable AI for automation and infrastructure challenges.</p>
-            <p>Built custom AI agents using Smolagents and LangChain for query resolution and configuration automation, handling large-scale data volumes to extract actionable insights.</p>
-            <p>Explored generative models for code generation and documentation automation, streamlining development in simulated distributed systems.</p>
-        </section>
-        <section class="section">
-            <h2>Education & Certificates</h2>
-            <ul>
-                <li>(2024) University of Texas at Austin - Post Graduate Degree in Artificial Intelligence & Machine Learning</li>
-                <li>(2023-2024) Fast.ai/Answer.ai - SolveIt With Code & Practical Deep Learning for Coders courses</li>
-                <li>(2019) Texas A&M University - Bachelors in Science - Pre-med (Kinesiology) - Self-funded debt-free</li>
-                <li>(2021-2024) - Hugging Face Deep Reinforcement Learning Course, Hugging Face NLP Certificate, Hugging Face 3D Certificate, Hugging Face ML for Games Certificate, Advanced AI Transformers for Computer Vision, Deep Learning A-Z & Machine Learning A-Z, LangChain - Develop LLM powered applications, A-Z Hands-On Tableau Training for Data Science, IAAP CPACC & WAS (CPWA), and many more spanning networking, security, coding, devops, cloud, game development etc...</li>
-            </ul>
-        </section>
-        <section class="section coffee-section">
-            <div>
-                <h2>Kynda Coffee</h2>
-                <p>Founded October 2019, Kynda Coffee represents my entrepreneurial journey in the specialty coffee industry. We focus on quality coffee, scratch baked goods, and community.</p>
-                <a href="https://www.kyndacoffee.com/shop" class="btn">Order Coffee Beans</a>
-            </div>
-            <a href="https://www.kyndacoffee.com">
-                <div class="coffee-logo">
-                    <img src="https://github.com/Jpalmer95/Jpalmer95.github.io/blob/main/Kynda_Coffee_Logo.png?raw=true" alt="Kynda Coffee Logo">
-                </div>
+<body class="antialiased overflow-x-hidden selection:bg-accent selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 start-0 border-b border-gray-800 bg-dark-bg/90 backdrop-blur-md">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <span class="self-center text-xl font-bold whitespace-nowrap text-white">JK<span class="text-accent">.</span></span>
             </a>
-        </section>
-    </div>
+            <div class="hidden md:block w-auto" id="navbar-default">
+                <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
+                    <li><a href="#about" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">About</a></li>
+                    <li><a href="#featured" class="block py-2 px-3 text-accent font-semibold hover:text-accent-hover transition-colors">New Release</a></li>
+                    <li><a href="#experience" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">Experience</a></li>
+                    <li><a href="#projects" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">Projects</a></li>
+                    <li><a href="#kynda" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">Kynda Coffee</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-20 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
+        <div class="absolute bottom-20 left-0 w-72 h-72 bg-blue-900/10 rounded-full blur-3xl -z-10"></div>
+
+        <div class="container mx-auto px-4 text-center z-10">
+            <div class="mb-8 relative inline-block group" data-aos="fade-down">
+                <div class="absolute -inset-1 bg-gradient-to-r from-accent to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                <img src="https://github.com/Jpalmer95/Jpalmer95.github.io/blob/main/Jonathan%20Korstad%20Headshot.png?raw=true" 
+                     alt="Jonathan Korstad" 
+                     class="relative w-48 h-48 rounded-full border-4 border-dark-card object-cover shadow-2xl mx-auto">
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-bold mb-4 tracking-tight" data-aos="fade-up" data-aos-delay="100">
+                Jonathan <span class="text-accent">Korstad</span>, CPWA
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-text-secondary mb-8 max-w-2xl mx-auto font-light" data-aos="fade-up" data-aos-delay="200">
+                Senior Accessibility Analyst & AI Engineer building scalable intelligent systems and bridging the gap between digital accessibility and artificial intelligence.
+            </p>
+
+            <div class="flex justify-center gap-6 mb-12" data-aos="fade-up" data-aos-delay="300">
+                <a href="https://github.com/Jpalmer95" target="_blank" class="text-2xl text-text-secondary hover:text-accent transition-transform hover:scale-110"><i class="fab fa-github"></i></a>
+                <a href="https://huggingface.co/jkorstad" target="_blank" class="text-2xl text-text-secondary hover:text-accent transition-transform hover:scale-110">
+                    <span class="sr-only">HuggingFace</span>
+                    🤗
+                </a>
+                <a href="https://x.com/JonathanKorstad" target="_blank" class="text-2xl text-text-secondary hover:text-accent transition-transform hover:scale-110"><i class="fab fa-x-twitter"></i></a>
+                <a href="mailto:jpkorstad@gmail.com" class="text-2xl text-text-secondary hover:text-accent transition-transform hover:scale-110"><i class="fas fa-envelope"></i></a>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="400">
+                <a href="#featured" class="px-8 py-3 bg-accent hover:bg-accent-hover text-white rounded-full font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
+                    <i class="fas fa-star"></i> Check out MenuMetrics
+                </a>
+                <a href="#contact" class="px-8 py-3 bg-dark-card hover:bg-dark-lighter border border-gray-700 text-white rounded-full font-semibold transition-all flex items-center justify-center gap-2">
+                    Contact Me
+                </a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-text-secondary">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Featured Section: MenuMetrics -->
+    <section id="featured" class="py-20 bg-dark-lighter relative border-y border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto bg-gradient-to-br from-dark-card to-gray-900 rounded-2xl p-8 md:p-12 border border-accent/20 shadow-2xl relative overflow-hidden" data-aos="zoom-in">
+                <!-- Decorative background glow -->
+                <div class="absolute top-0 right-0 w-full h-full bg-accent/5 pointer-events-none"></div>
+                
+                <div class="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                    <div class="flex-1">
+                        <span class="inline-block px-3 py-1 bg-accent/20 text-accent text-sm font-bold rounded-full mb-4 border border-accent/20">NEW RELEASE</span>
+                        <h2 class="text-4xl font-bold mb-4 text-white">MenuMetrics<span class="text-accent">.org</span></h2>
+                        <p class="text-text-secondary text-lg mb-6 leading-relaxed">
+                            A powerful new platform designed to help small business owners, restaurants, coffee shops, and hospitality businesses gain 
+                            deep insights into their ingredients, recipes, and pricing.
+                        </p>
+                        <ul class="space-y-3 mb-8 text-gray-300">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-accent mt-1"></i>
+                                <span>Advanced calculations & metrics for precise costing.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-robot text-accent mt-1"></i>
+                                <span><strong>Native AI Agents</strong> to assist with business strategy and analysis.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-boxes-stacked text-accent mt-1"></i>
+                                <span>Full inventory management & maintenance (Optional).</span>
+                            </li>
+                        </ul>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://menumetrics.org" target="_blank" class="px-6 py-3 bg-white text-dark-bg font-bold rounded-lg hover:bg-gray-200 transition-colors">
+                                Visit MenuMetrics.org <i class="fas fa-external-link-alt ml-2"></i>
+                            </a>
+                            <span class="flex items-center text-sm text-gray-400">
+                                <i class="fas fa-tag mr-2"></i> Free to use with paid AI plans
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Visual representation (Iconography) -->
+                    <div class="w-full md:w-1/3 flex justify-center">
+                        <div class="relative w-48 h-48 md:w-64 md:h-64 bg-dark-bg rounded-full flex items-center justify-center border-4 border-accent shadow-[0_0_50px_rgba(0,123,255,0.3)]">
+                            <i class="fas fa-chart-pie text-6xl md:text-8xl text-white"></i>
+                            <div class="absolute -bottom-4 -right-4 bg-accent text-white p-4 rounded-xl shadow-lg">
+                                <i class="fas fa-brain text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center" data-aos="fade-up">About <span class="text-accent">Me</span></h2>
+            <div class="max-w-4xl mx-auto text-text-secondary leading-loose text-lg text-justify glass-card p-8 rounded-xl" data-aos="fade-up">
+                <p class="mb-6">
+                    I am a results-driven AI Engineer with expertise in developing scalable AI agents and tools for automation, infrastructure management, and large-scale data processing. My work focuses on building intelligent systems using deep reinforcement learning and frameworks like LangChain and Smolagents to streamline operations and resolve complex queries.
+                </p>
+                <p class="mb-6">
+                    Currently, I serve as a Senior Accessibility Analyst and AI Software Engineer at Visa, where I lead global design and engineering teams to integrate accessibility into the product lifecycle. I bridge the gap between technical engineering and user-centric design. I also 
+                </p>
+                <p>
+                    With a background spanning technology, healthcare, and construction, I bring a unique, cross-functional perspective to solving complex problems. I am also the proud founder of Kynda Coffee, where my entrepreneurial spirit meets my passion for specialty coffee.
+                </p>
+                <div class="mt-8 pt-8 border-t border-gray-700">
+                    <h3 class="text-white font-semibold mb-3">Current Interests:</h3>
+                    <p class="text-sm">
+                        Deep Reinforcement Learning (Online/Offline), Generative 3D & Multimodal Models, Generative Audio Training, Digital Accessibility, AI Agents, Computer Vision, XR, Game Dev, and Lifelong Learning.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-dark-lighter">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center" data-aos="fade-up">Technical <span class="text-accent">Skills</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <!-- AI & ML -->
+                <div class="bg-dark-card p-6 rounded-xl border-l-4 border-accent hover:bg-gray-800 transition-colors" data-aos="fade-up" data-aos-delay="0">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-brain text-accent"></i> AI & Machine Learning</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">Deep Reinforcement Learning</span>
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">PyTorch</span>
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">JAX (Learning)</span>
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">Scikit-Learn</span>
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">LangChain</span>
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">Smolagents</span>
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">Hugging Face Ecosystem</span>
+                        <span class="skill-tag bg-accent/10 text-accent px-3 py-1 rounded-md text-sm cursor-default">Generative 3D/Audio</span>
+                    </div>
+                </div>
+
+                <!-- Development -->
+                <div class="bg-dark-card p-6 rounded-xl border-l-4 border-green-500 hover:bg-gray-800 transition-colors" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-code text-green-500"></i> Development</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag bg-green-500/10 text-green-500 px-3 py-1 rounded-md text-sm cursor-default">Python</span>
+                        <span class="skill-tag bg-green-500/10 text-green-500 px-3 py-1 rounded-md text-sm cursor-default">C++</span>
+                        <span class="skill-tag bg-green-500/10 text-green-500 px-3 py-1 rounded-md text-sm cursor-default">Flutter</span>
+                        <span class="skill-tag bg-green-500/10 text-green-500 px-3 py-1 rounded-md text-sm cursor-default">React/React Native</span>
+                        <span class="skill-tag bg-green-500/10 text-green-500 px-3 py-1 rounded-md text-sm cursor-default">HTML/CSS/JS</span>
+                        <span class="skill-tag bg-green-500/10 text-green-500 px-3 py-1 rounded-md text-sm cursor-default">Rust (Learning)</span>
+                        <span class="skill-tag bg-green-500/10 text-green-500 px-3 py-1 rounded-md text-sm cursor-default">Digital Accessibility</span>
+                    </div>
+                </div>
+
+                <!-- Simulation & Tools -->
+                <div class="bg-dark-card p-6 rounded-xl border-l-4 border-purple-500 hover:bg-gray-800 transition-colors" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-gamepad text-purple-500"></i> Sim & Tools</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag bg-purple-500/10 text-purple-500 px-3 py-1 rounded-md text-sm cursor-default">Unreal Engine 5</span>
+                        <span class="skill-tag bg-purple-500/10 text-purple-500 px-3 py-1 rounded-md text-sm cursor-default">Unity</span>
+                        <span class="skill-tag bg-purple-500/10 text-purple-500 px-3 py-1 rounded-md text-sm cursor-default">Godot</span>
+                        <span class="skill-tag bg-purple-500/10 text-purple-500 px-3 py-1 rounded-md text-sm cursor-default">Isaac Sim</span>
+                        <span class="skill-tag bg-purple-500/10 text-purple-500 px-3 py-1 rounded-md text-sm cursor-default">Tableau</span>
+                        <span class="skill-tag bg-purple-500/10 text-purple-500 px-3 py-1 rounded-md text-sm cursor-default">Entrepreneurship</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center" data-aos="fade-up">Professional <span class="text-accent">Experience</span></h2>
+            
+            <div class="max-w-4xl mx-auto space-y-8">
+                <!-- Visa -->
+                <div class="relative pl-8 border-l-2 border-gray-700" data-aos="fade-right">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-accent"></div>
+                    <div class="bg-dark-card p-6 rounded-lg ml-4 shadow-lg">
+                        <div class="flex flex-col md:flex-row justify-between mb-2">
+                            <h3 class="text-xl font-bold text-white">Senior Accessibility Analyst & AI Software Engineer</h3>
+                            <span class="text-accent font-mono">2022 - Current</span>
+                        </div>
+                        <h4 class="text-lg text-gray-400 mb-4">Visa</h4>
+                        <ul class="list-disc list-inside text-text-secondary space-y-2 text-sm md:text-base">
+                            <li>Invented a novel secure PIN entry method for touch-screen interfaces, enabling independent use for unsighted users across global payment systems.</li>
+                            <li>Collaborated with ⅔ of Visa’s Global Design teams to integrate accessibility into the full product lifecycle and the Visa Product Design System (VPDS).</li>
+                            <li>Automated auditing and remediation processes using AI tools for large-scale code analysis and configuration management.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Kynda Coffee -->
+                <div class="relative pl-8 border-l-2 border-gray-700" data-aos="fade-right" data-aos-delay="100">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-yellow-600"></div>
+                    <div class="bg-dark-card p-6 rounded-lg ml-4 shadow-lg">
+                        <div class="flex flex-col md:flex-row justify-between mb-2">
+                            <h3 class="text-xl font-bold text-white">Founder & Owner</h3>
+                            <span class="text-accent font-mono">2020 - Current</span>
+                        </div>
+                        <h4 class="text-lg text-gray-400 mb-4">Kynda Coffee</h4>
+                        <ul class="list-disc list-inside text-text-secondary space-y-2 text-sm md:text-base">
+                            <li>Bootstrapped a self-funded business from concept to full operations.</li>
+                            <li>Developed custom software for inventory tracking and operational automation.</li>
+                            <li>Led a team through rapid problem-solving in diverse environments, optimizing processes for growth.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- MicroAssist -->
+                <div class="relative pl-8 border-l-2 border-gray-700" data-aos="fade-right" data-aos-delay="200">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gray-500"></div>
+                    <div class="bg-dark-card p-6 rounded-lg ml-4 shadow-lg">
+                        <div class="flex flex-col md:flex-row justify-between mb-2">
+                            <h3 class="text-xl font-bold text-white">Accessibility Analyst</h3>
+                            <span class="text-accent font-mono">2021 - 2022</span>
+                        </div>
+                        <h4 class="text-lg text-gray-400 mb-4">MicroAssist</h4>
+                        <p class="text-text-secondary text-sm md:text-base">SME responsible for testing, auditing, and code remediation for clients to mitigate accessibility issues and ensure compliance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-dark-lighter">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12 text-center" data-aos="fade-up">Projects & <span class="text-accent">Research</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                
+                <!-- RL Projects -->
+                <div class="bg-dark-card rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-accent/20 transition-all" data-aos="flip-up">
+                    <div class="p-6 h-full flex flex-col">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-robot text-3xl text-accent"></i>
+                            <h3 class="text-xl font-bold">Reinforcement Learning Agents</h3>
+                        </div>
+                        <p class="text-text-secondary mb-4 flex-grow">
+                            Honors level projects for Hugging Face Deep RL Course. Optimized agents for tasks including:
+                        </p>
+                        <ul class="text-sm text-gray-400 space-y-1 mb-4">
+                            <li>• LunarLander-v2 (Stable landing)</li>
+                            <li>• Multi-agent Soccer Duos (Distributed training)</li>
+                            <li>• VizDOOM Health Gathering (Real-time decision making)</li>
+                            <li>• Panda Gym/PyBullet environments</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded">Python</span>
+                            <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded">PyTorch</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom AI Agents -->
+                <div class="bg-dark-card rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-accent/20 transition-all" data-aos="flip-up" data-aos-delay="100">
+                    <div class="p-6 h-full flex flex-col">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-project-diagram text-3xl text-green-500"></i>
+                            <h3 class="text-xl font-bold">Custom Agent Systems</h3>
+                        </div>
+                        <p class="text-text-secondary mb-4 flex-grow">
+                            Built custom AI agents using Smolagents and LangChain for query resolution and configuration automation. Designed systems capable of handling large-scale data volumes to extract actionable insights efficiently.
+                        </p>
+                        <div class="mt-auto">
+                            <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded">LangChain</span>
+                            <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded">Smolagents</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gen Models -->
+                <div class="bg-dark-card rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-accent/20 transition-all" data-aos="flip-up" data-aos-delay="200">
+                    <div class="p-6 h-full flex flex-col">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-code-branch text-3xl text-purple-500"></i>
+                            <h3 class="text-xl font-bold">Generative Code & Docs</h3>
+                        </div>
+                        <p class="text-text-secondary mb-4 flex-grow">
+                            Explored and implemented generative models for code generation and documentation automation. Focused on streamlining development processes in simulated distributed systems to improve developer velocity.
+                        </p>
+                        <div class="mt-auto">
+                            <span class="text-xs font-mono text-purple-500 bg-purple-500/10 px-2 py-1 rounded">GenAI</span>
+                            <span class="text-xs font-mono text-purple-500 bg-purple-500/10 px-2 py-1 rounded">Automation</span>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Education Card -->
+                 <div class="bg-dark-card rounded-xl overflow-hidden border border-gray-700" data-aos="flip-up" data-aos-delay="300">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">Education</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-white font-semibold">Post Grad - AI & Machine Learning</h4>
+                                <p class="text-accent text-sm">UT Austin (2024)</p>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">SolveIt With Code & Deep Learning</h4>
+                                <p class="text-accent text-sm">Fast.ai / Answer.ai (2023-2024)</p>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">B.S. Pre-med (Kinesiology)</h4>
+                                <p class="text-accent text-sm">Texas A&M University (2019)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Kynda Coffee Section -->
+    <section id="kynda" class="py-20 relative overflow-hidden">
+        <!-- Overlay image feel using CSS -->
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-bg to-transparent"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12 bg-dark-card/80 backdrop-blur-sm p-8 md:p-12 rounded-2xl border border-yellow-600/30">
+                <div class="lg:w-1/2">
+                    <h2 class="text-4xl font-bold mb-6 text-white">Kynda <span class="text-yellow-500">Coffee</span></h2>
+                    <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                        Founded in October 2019, Kynda Coffee represents my entrepreneurial journey. It's not just about great coffee; it's about building systems, managing infrastructure, and creating community. From inventory algorithms to the perfect roast profile, I apply my engineering mindset to every cup.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://www.kyndacoffee.com/shop" target="_blank" class="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-bold transition-colors shadow-lg">
+                            <i class="fas fa-shopping-bag mr-2"></i> Shop Beans
+                        </a>
+                        <a href="https://www.kyndacoffee.com" target="_blank" class="px-6 py-3 border border-yellow-600 text-yellow-500 hover:bg-yellow-600/10 rounded-lg font-bold transition-colors">
+                            Visit Site
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/3 flex justify-center">
+                    <div class="w-64 h-64 bg-white rounded-full p-4 flex items-center justify-center shadow-2xl animate-spin-slow hover:animate-none transition-all duration-700">
+                        <img src="https://github.com/Jpalmer95/Jpalmer95.github.io/blob/main/Kynda_Coffee_Logo.png?raw=true" alt="Kynda Coffee Logo" class="w-full h-full object-contain">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Footer -->
+    <section id="contact" class="py-12 border-t border-gray-800 bg-dark-bg text-center">
+        <div class="container mx-auto px-4">
+            <h3 class="text-2xl font-bold mb-8">Let's Connect</h3>
+            <div class="flex justify-center gap-8 mb-8">
+                <a href="mailto:jpkorstad@gmail.com" class="flex flex-col items-center gap-2 group">
+                    <div class="w-12 h-12 bg-dark-card rounded-full flex items-center justify-center group-hover:bg-accent transition-colors">
+                        <i class="fas fa-envelope text-white"></i>
+                    </div>
+                    <span class="text-sm text-gray-400">Email</span>
+                </a>
+                <a href="https://linkedin.com/in/jonathankorstad" class="flex flex-col items-center gap-2 group">
+                    <div class="w-12 h-12 bg-dark-card rounded-full flex items-center justify-center group-hover:bg-accent transition-colors">
+                        <i class="fab fa-linkedin-in text-white"></i>
+                    </div>
+                    <span class="text-sm text-gray-400">LinkedIn</span>
+                </a>
+                <a href="tel:+15127675662" class="flex flex-col items-center gap-2 group">
+                    <div class="w-12 h-12 bg-dark-card rounded-full flex items-center justify-center group-hover:bg-accent transition-colors">
+                        <i class="fas fa-phone text-white"></i>
+                    </div>
+                    <span class="text-sm text-gray-400">Phone</span>
+                </a>
+            </div>
+            <p class="text-gray-500 text-sm">
+                &copy; <script>document.write(new Date().getFullYear())</script> Jonathan Korstad. All rights reserved. <br>
+                Built with <i class="fas fa-heart text-red-500"></i> and AI.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Initialize AOS animation
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
 </body>
 </html>
