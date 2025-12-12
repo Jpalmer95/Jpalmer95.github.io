@@ -155,7 +155,7 @@
             </div>
         </div>
         
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-text-secondary">
+        <div id="scroll-arrow" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-text-secondary">
             <i class="fas fa-chevron-down"></i>
         </div>
     </section>
@@ -407,7 +407,7 @@
                 </div>
 
                  <!-- Education Card -->
-                 <div class="bg-dark-card rounded-xl overflow-hidden border border-gray-700" data-aos="flip-up" data-aos-delay="300">
+                 <div class="bg-dark-card rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-accent/20 transition-all" data-aos="flip-up" data-aos-delay="300">
                     <div class="p-6">
                         <h3 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">Education</h3>
                         <div class="space-y-4">
@@ -506,6 +506,14 @@
             once: true,
             offset: 100
         });
+
+        // Stop the scroll arrow animation after 4 seconds to meet WCAG criteria for moving content
+        setTimeout(() => {
+            const arrow = document.getElementById('scroll-arrow');
+            if (arrow) {
+                arrow.classList.remove('animate-bounce');
+            }
+        }, 4000);
     </script>
 </body>
 </html>
