@@ -105,11 +105,11 @@
         </div>
     </nav>
 
-    <section class="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden">
+    <section class="pt-40 pb-20 flex items-center justify-center relative overflow-hidden">
         <div class="absolute top-20 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
         <div class="absolute bottom-20 left-0 w-72 h-72 bg-blue-900/10 rounded-full blur-3xl -z-10"></div>
-
-        <div class="container mx-auto px-4 text-center z-10">
+        <div class="container mx-auto px-4 text-center z-10"></div>
+        
             <div class="mb-8 relative inline-block group" data-aos="fade-down">
                 <div class="absolute -inset-1 bg-gradient-to-r from-accent to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
                 <img src="https://github.com/Jpalmer95/Jpalmer95.github.io/blob/main/Jonathan%20Korstad%20Headshot.png?raw=true" 
@@ -146,16 +146,12 @@
                 </a>
             </div>
         </div>
-        
-        <div id="scroll-arrow" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-text-secondary">
-            <i class="fas fa-chevron-down"></i>
-        </div>
     </section>
 
     <section id="about" class="py-20">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-12 text-center" data-aos="fade-up">About <span class="text-accent">Me</span></h2>
-            <div class="max-w-4xl mx-auto text-text-secondary leading-loose text-lg text-justify glass-card p-8 rounded-xl" data-aos="fade-up">
+            <div class="max-w-4xl mx-auto text-text-secondary leading-loose text-lg glass-card p-8 rounded-xl" data-aos="fade-up">
                 <p class="mb-6">
                     I am a results-driven AI Engineer with expertise in developing scalable AI agents and tools for automation, infrastructure management, and large-scale data processing. My work focuses on building intelligent systems using deep reinforcement learning and frameworks like LangChain and Smolagents to streamline operations and resolve complex queries.
                 </p>
@@ -512,14 +508,6 @@
             once: true,
             offset: 100
         });
-
-        // Stop the scroll arrow animation after 4 seconds to meet WCAG criteria for moving content
-        setTimeout(() => {
-            const arrow = document.getElementById('scroll-arrow');
-            if (arrow) {
-                arrow.classList.remove('animate-bounce');
-            }
-        }, 4000);
     </script>
 </body>
 </html>
