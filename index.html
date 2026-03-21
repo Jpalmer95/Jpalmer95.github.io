@@ -97,7 +97,6 @@
             <div class="hidden md:block w-auto" id="navbar-default">
                 <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
                     <li><a href="#about" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">About</a></li>
-                    <li><a href="#featured" class="block py-2 px-3 text-accent font-semibold hover:text-accent-hover transition-colors">New Release</a></li>
                     <li><a href="#experience" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">Experience</a></li>
                     <li><a href="#projects" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">Projects</a></li>
                     <li><a href="#kynda" class="block py-2 px-3 text-gray-300 hover:text-accent transition-colors">Kynda Coffee</a></li>
@@ -139,10 +138,10 @@
             </div>
 
             <div class="flex flex-col md:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="400">
-                <a href="#featured" class="px-8 py-3 bg-accent hover:bg-accent-hover text-white rounded-full font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
-                    <i class="fas fa-star"></i> Check out MenuMetrics
+                <a href="#projects" class="px-8 py-3 bg-accent hover:bg-accent-hover text-white rounded-full font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-code"></i> View My Projects
                 </a>
-                <a href="#contact" class="px-8 py-3 bg-dark-card hover:bg-dark-lighter border border-gray-700 text-white rounded-full font-semibold transition-all flex items-center justify-center gap-2">
+                <a href="#contact" class="px-8 py-3 bg-dark-card hover:bg-dark-lighter border border-gray-700 text-white rounded-full font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap">
                     Contact Me
                 </a>
             </div>
@@ -150,55 +149,6 @@
         
         <div id="scroll-arrow" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-text-secondary">
             <i class="fas fa-chevron-down"></i>
-        </div>
-    </section>
-
-    <section id="featured" class="py-20 bg-dark-lighter relative border-y border-gray-800">
-        <div class="container mx-auto px-4">
-            <div class="max-w-6xl mx-auto bg-gradient-to-br from-dark-card to-gray-900 rounded-2xl p-8 md:p-12 border border-accent/20 shadow-2xl relative overflow-hidden" data-aos="zoom-in">
-                <div class="absolute top-0 right-0 w-full h-full bg-accent/5 pointer-events-none"></div>
-                
-                <div class="flex flex-col md:flex-row items-center gap-12 relative z-10">
-                    <div class="flex-1">
-                        <span class="inline-block px-3 py-1 bg-accent/20 text-accent text-sm font-bold rounded-full mb-4 border border-accent/20">NEW RELEASE</span>
-                        <h2 class="text-4xl font-bold mb-4 text-white">MenuMetrics<span class="text-accent">.org</span></h2>
-                        <p class="text-text-secondary text-lg mb-6 leading-relaxed">
-                            A powerful new platform designed to help small business owners, restaurants, coffee shops, and hospitality businesses gain 
-                            deep insights into their ingredients, recipes, and pricing.
-                        </p>
-                        <ul class="space-y-3 mb-8 text-gray-300">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-check-circle text-accent mt-1"></i>
-                                <span>Advanced calculations & metrics for precise costing.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-robot text-accent mt-1"></i>
-                                <span><strong>Native AI Agents</strong> to assist with business strategy and analysis.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-boxes-stacked text-accent mt-1"></i>
-                                <span>Full inventory management & maintenance (Optional).</span>
-                            </li>
-                        </ul>
-                        <div class="flex flex-wrap gap-4">
-                            <a href="https://menumetrics.org" target="_blank" class="px-6 py-3 bg-white text-dark-bg font-bold rounded-lg hover:bg-gray-200 transition-colors">
-                                Visit MenuMetrics.org <i class="fas fa-external-link-alt ml-2"></i>
-                            </a>
-                            <span class="flex items-center text-sm text-gray-400">
-                                <i class="fas fa-tag mr-2"></i> Free to use with paid AI plans
-                            </span>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-1/3 flex justify-center">
-                        <div class="relative w-48 h-48 md:w-64 md:h-64 bg-dark-bg rounded-full flex items-center justify-center border-4 border-accent shadow-[0_0_50px_rgba(0,123,255,0.3)]">
-                            <i class="fas fa-chart-pie text-6xl md:text-8xl text-white"></i>
-                            <div class="absolute -bottom-4 -right-4 bg-accent text-white p-4 rounded-xl shadow-lg">
-                                <i class="fas fa-brain text-2xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -501,11 +451,11 @@
                     <p class="text-lg text-gray-300 mb-6 leading-relaxed">
                         Founded in October 2019, Kynda Coffee represents my entrepreneurial journey. It's not just about great coffee; it's about building systems, managing infrastructure, and creating community. From inventory algorithms to the perfect roast profile, I apply my engineering mindset to every cup.
                     </p>
-                    <div class="flex gap-4">
-                        <a href="https://www.kyndacoffee.com/shop" target="_blank" class="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-bold transition-colors shadow-lg">
+                    <div class="flex flex-wrap gap-4">
+                        <a href="https://www.kyndacoffee.com/shop" target="_blank" class="px-5 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-bold transition-colors shadow-lg whitespace-nowrap flex items-center">
                             <i class="fas fa-shopping-bag mr-2"></i> Shop Beans
                         </a>
-                        <a href="https://www.kyndacoffee.com" target="_blank" class="px-6 py-3 border border-yellow-600 text-yellow-500 hover:bg-yellow-600/10 rounded-lg font-bold transition-colors">
+                        <a href="https://www.kyndacoffee.com" target="_blank" class="px-5 py-3 border border-yellow-600 text-yellow-500 hover:bg-yellow-600/10 rounded-lg font-bold transition-colors whitespace-nowrap flex items-center">
                             Visit Site
                         </a>
                     </div>
