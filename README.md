@@ -82,4 +82,4 @@ Personal portfolio — all rights reserved. Code is open for reference and learn
 
 ---
 
-**Connect:** [LinkedIn](https://linkedin.com/in/jonathankorstad) · [GitHub](https://github.com/Jpalmer95) · [HuggingFace](https://huggingface.co/jkorstad) · [X/Twitter](https://x.com/JonathanKorstad)
+**Connect:** [LinkedIn](https://linkedin.com/in/jkorstad) · [GitHub](https://github.com/Jpalmer95) · [HuggingFace](https://huggingface.co/jkorstad) · [X/Twitter](https://x.com/JonathanKorstad)
