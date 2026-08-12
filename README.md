@@ -71,7 +71,7 @@ git push origin main
 | **ForgeDNA** | [GitHub](https://github.com/Jpalmer95/ForgeDNA) | AI-native game design platform with 17-agent build pipeline |
 | **MenuMetrics** | [Live](https://menumetrics.org) | Recipe cost analysis & inventory for restaurants |
 | **SynapseJourney** | [Live](https://synapsejourney.org) | Open-source adaptive learning platform |
-| **GetFreeQuote** | [GitHub](https://github.com/Jpalmer95/GetFreeQuote-UpWork-) | Industry-agnostic marketplace for quotes and services |
+| **GetFreeQuote** | [Live](https://getfreequote.org/) | Industry-agnostic marketplace for quotes and services |
 | **LVL-2-Rogue** | [HF Space](https://huggingface.co/spaces/jkorstad/LVL-2-Rogue) | Unified generative AI pipeline (image, 3D, video, audio) |
 | **SuperSonic** | [GitHub](https://github.com/Jpalmer95/SuperSonic) | WebXR VR game experience |
 | **Kynda Coffee** | [Website](https://www.kyndacoffee.com) | Specialty coffee roastery & e-commerce |
