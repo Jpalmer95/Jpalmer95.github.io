@@ -75,7 +75,6 @@
     <script type="module">
         import * as THREE from 'three';
         import { VRButton } from 'three/addons/webxr/VRButton.js';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         // ---------------------------------------------------------------------
         // WebXR capability detection
@@ -97,11 +96,11 @@
         if (immersiveSupported) {
             enterVR.classList.add('show');
             xrBadge.textContent = 'WebXR Ready — headset detected';
-            hint.textContent = 'Enter XR to step into the space. Point with your controller and pull the trigger to select panels and queue music.';
+            hint.textContent = 'Enter XR to step into the space. Point with your controller and pull the trigger to select panels; push the thumbstick left/right to turn the ring of panels around you without moving your head.';
         } else {
             flatBadge.style.display = 'inline-block';
             xrBadge.style.display = 'none';
-            hint.textContent = 'No WebXR headset detected, so you\u2019re in desktop 3D mode. Click and drag to look around; click a panel to focus it. Works best on a Quest 3 browser.';
+            hint.textContent = 'No WebXR headset detected, so you\u2019re in desktop 3D mode. Drag to turn the panels, scroll (or use \u2191\u2193) to zoom in and read them, and click buttons to interact. Works best on a Quest 3 browser.';
         }
 
         // ---------------------------------------------------------------------
@@ -115,6 +114,11 @@
         const container = document.getElementById('container');
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x05060a, 0.016);
+
+        // Stage group: rotating this "turns" the ring of panels around a seated user.
+        // Everything that should spin with the world (panels, stars, floor ring) lives here.
+        const stage = new THREE.Group();
+        scene.add(stage);
 
         const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 200);
         camera.position.set(0, 1.6, 0);
@@ -147,7 +151,7 @@
         }
         starsGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
         const stars = new THREE.Points(starsGeo, new THREE.PointsMaterial({ color: 0xaabbee, size: 0.12, sizeAttenuation: true, transparent: true, opacity: 0.85 }));
-        scene.add(stars);
+        stage.add(stars);
 
         // Floor ring (ground reference)
         const ringGeo = new THREE.RingGeometry(3.4, 3.45, 96);
@@ -155,7 +159,7 @@
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = -Math.PI / 2;
         ring.position.y = -0.02;
-        scene.add(ring);
+        stage.add(ring);
 
         // ---------------------------------------------------------------------
         // Content panels — rendered to CanvasTextures, clickable via raycast UV
@@ -181,19 +185,19 @@
             }
             setRegions(regions) { this.regions = regions; }
             redraw() {
-                            this._highlight = null;
-                            const c = this.ctx, w = this.canvas.width, h = this.canvas.height;
-                            c.clearRect(0, 0, w, h);
-                            // Panel background
-                            const g = c.createLinearGradient(0, 0, 0, h);
-                            g.addColorStop(0, '#161b28'); g.addColorStop(1, '#0c0f18');
-                            c.fillStyle = g;
-                            this._rr(c, 0, 0, w, h, 28); c.fill();
-                            c.strokeStyle = 'rgba(0,123,255,.35)'; c.lineWidth = 4;
-                            this._rr(c, 2, 2, w - 4, h - 4, 26); c.stroke();
-                            if (this.draw) this.draw(c, w, h);
-                            this.texture.needsUpdate = true;
-                        }
+                this._highlight = null;
+                const c = this.ctx, w = this.canvas.width, h = this.canvas.height;
+                c.clearRect(0, 0, w, h);
+                // Panel background
+                const g = c.createLinearGradient(0, 0, 0, h);
+                g.addColorStop(0, '#161b28'); g.addColorStop(1, '#0c0f18');
+                c.fillStyle = g;
+                this._rr(c, 0, 0, w, h, 28); c.fill();
+                c.strokeStyle = 'rgba(0,123,255,.35)'; c.lineWidth = 4;
+                this._rr(c, 2, 2, w - 4, h - 4, 26); c.stroke();
+                if (this.draw) this.draw(c, w, h);
+                this.texture.needsUpdate = true;
+            }
             _rr(c, x, y, w, h, r) {
                 r = Math.min(r, w / 2, h / 2);
                 c.beginPath();
@@ -430,7 +434,7 @@
             const angle = (i / panels.length) * Math.PI * 2 - Math.PI / 2;
             p.mesh.position.set(Math.cos(angle) * panelRadius, 1.6, Math.sin(angle) * panelRadius);
             p.mesh.lookAt(0, 1.6, 0);
-            scene.add(p.mesh);
+            stage.add(p.mesh);
         });
 
         // Gentle floating animation
@@ -447,18 +451,23 @@
 
         let hoveredPanel = null, hoveredRegion = null;
 
+        function regionAt(panel, uv) {
+            // three.js returns UV with v=0 at the BOTTOM of the plane, but our
+            // canvas (and region defs) use y=0 at the TOP — flip Y before matching.
+            if (!panel || !uv || !panel.regions.length) return -1;
+            const cx = uv.x;
+            const cy = 1 - uv.y;
+            return panel.regions.findIndex((r) =>
+                cx >= r.x && cx <= r.x + r.w && cy >= r.y && cy <= r.y + r.h);
+        }
+
         function raycastFrom(origin, dir) {
             raycaster.set(origin, dir);
             const hits = raycaster.intersectObjects(rayTargets, false);
             if (hits.length) {
                 const panel = hits[0].object.userData.panel;
-                const uv = hits[0].uv;
-                let regionIdx = null;
-                if (uv && panel.regions.length) {
-                    regionIdx = panel.regions.findIndex((r) =>
-                        uv.x >= r.x && uv.x <= r.x + r.w && uv.y >= r.y && uv.y <= r.y + r.h);
-                }
-                return { panel, regionIdx, point: hits[0].point };
+                const regionIdx = regionAt(panel, hits[0].uv);
+                return { panel, regionIdx: regionIdx >= 0 ? regionIdx : null, point: hits[0].point };
             }
             return null;
         }
@@ -491,6 +500,8 @@
         let controller1, controller2;
         function buildController(index) {
             const c = renderer.xr.getController(index);
+            // Capture the XRInputSource so we can read the thumbstick gamepad axes later.
+            c.addEventListener('connected', (evt) => { c.userData.inputSource = evt.data; });
             // A short ray line attached to the controller for pointing feedback
             const rayLine = new THREE.Line(
                 new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, -0.05), new THREE.Vector3(0, 0, -4)]),
@@ -505,54 +516,93 @@
             return c;
         }
 
-        // Mouse fallback (desktop 3D)
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.target.set(0, 1.6, 0);
-        controls.enableDamping = true;
-        controls.enablePan = false;
-        controls.minDistance = 1.5;
-        controls.maxDistance = 8;
-        controls.maxPolarAngle = Math.PI * 0.85;
+        // ---- Desktop 3D navigation: drag to turn the world (grab/pull), scroll to zoom ----
+        // "Turn" is done by rotating `stage`; panels keep facing the seated user via their
+        // per-frame lookAt(center), so rotating the stage cycles panels around the viewer.
+        let cameraZoom = 0;   // 0 = at center, up to ~2.6 = dollied toward the front panel
+        let cameraPitch = 0;  // look up/down
+        const ZOOM_MIN = 0, ZOOM_MAX = 2.6;
+        const PITCH_MAX = 0.8;
 
-        renderer.domElement.addEventListener('click', (e) => {
+        function applyCamera() {
+            camera.position.set(0, 1.6, -cameraZoom);
+            camera.rotation.set(cameraPitch, 0, 0, 'YXZ');
+        }
+        applyCamera();
+
+        // Grab sensitivity: flip the sign of GRAB_DIR if the turn feels reversed.
+        const GRAB_DIR = -1;   // drag right -> world content moves right (grab/pull)
+        const GRAB_SENS = 0.005, PITCH_SENS = 0.004;
+
+        let dragging = false, moved = false, lastX = 0, lastY = 0;
+
+        renderer.domElement.addEventListener('pointerdown', (e) => {
             if (renderer.xr.isPresenting) return;
-            const ndc = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
-            raycaster.setFromCamera(ndc, camera);
-            const hits = raycaster.intersectObjects(rayTargets, false);
-            if (hits.length) {
-                const panel = hits[0].object.userData.panel;
-                const uv = hits[0].uv;
-                let regionIdx = null;
-                if (uv && panel.regions.length) {
-                    regionIdx = panel.regions.findIndex((r) => uv.x >= r.x && uv.x <= r.x + r.w && uv.y >= r.y && uv.y <= r.y + r.h);
-                }
-                if (panel === musicPanel && regionIdx != null && regionIdx >= 0) {
-                    musicAction(panel.regions[regionIdx].action);
-                }
-            }
+            dragging = true; moved = false; lastX = e.clientX; lastY = e.clientY;
+            renderer.domElement.setPointerCapture(e.pointerId);
+        });
+        renderer.domElement.addEventListener('pointermove', (e) => {
+            if (renderer.xr.isPresenting) return;
+            updatePointerHover(e);
+            if (!dragging) return;
+            const dx = e.clientX - lastX, dy = e.clientY - lastY;
+            lastX = e.clientX; lastY = e.clientY;
+            if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+            // Turn the world with horizontal drag; pitch the camera with vertical drag.
+            stage.rotation.y += GRAB_DIR * dx * GRAB_SENS;
+            cameraPitch = THREE.MathUtils.clamp(cameraPitch - dy * PITCH_SENS, -PITCH_MAX, PITCH_MAX);
+            applyCamera();
+        });
+        renderer.domElement.addEventListener('pointerup', (e) => {
+            if (renderer.xr.isPresenting) return;
+            if (!moved) activatePointer(e);   // a real click, not a drag
+            dragging = false;
+        });
+        renderer.domElement.addEventListener('wheel', (e) => {
+            if (renderer.xr.isPresenting) return;
+            e.preventDefault();
+            cameraZoom = THREE.MathUtils.clamp(cameraZoom + (e.deltaY > 0 ? 0.15 : -0.15), ZOOM_MIN, ZOOM_MAX);
+            applyCamera();
+        }, { passive: false });
+
+        // Keyboard fallback (desktop): arrows turn + zoom
+        window.addEventListener('keydown', (e) => {
+            if (renderer.xr.isPresenting) return;
+            const step = 0.08;
+            if (e.key === 'ArrowLeft') stage.rotation.y += GRAB_DIR * step;
+            else if (e.key === 'ArrowRight') stage.rotation.y -= GRAB_DIR * step;
+            else if (e.key === 'ArrowUp') { cameraZoom = THREE.MathUtils.clamp(cameraZoom - step, ZOOM_MIN, ZOOM_MAX); applyCamera(); }
+            else if (e.key === 'ArrowDown') { cameraZoom = THREE.MathUtils.clamp(cameraZoom + step, ZOOM_MIN, ZOOM_MAX); applyCamera(); }
         });
 
-        // Mouse hover highlight (throttled)
-        renderer.domElement.addEventListener('mousemove', (e) => {
-            if (renderer.xr.isPresenting) return;
+        function updatePointerHover(e) {
             const ndc = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
             raycaster.setFromCamera(ndc, camera);
             const hits = raycaster.intersectObjects(rayTargets, false);
             if (hits.length) {
                 const panel = hits[0].object.userData.panel;
-                const uv = hits[0].uv;
-                let regionIdx = null;
-                if (uv && panel.regions.length) {
-                    regionIdx = panel.regions.findIndex((r) => uv.x >= r.x && uv.x <= r.x + r.w && uv.y >= r.y && uv.y <= r.y + r.h);
-                }
+                const regionIdx = regionAt(panel, hits[0].uv);
                 if (hoveredPanel && hoveredPanel !== panel) hoveredPanel.highlight(null);
                 hoveredPanel = panel; hoveredRegion = regionIdx;
-                if (panel === musicPanel) panel.highlight(regionIdx != null && regionIdx >= 0 ? regionIdx : -1);
+                if (panel === musicPanel) panel.highlight(regionIdx >= 0 ? regionIdx : -1);
             } else {
                 if (hoveredPanel) hoveredPanel.highlight(null);
                 hoveredPanel = null; hoveredRegion = null;
             }
-        });
+        }
+
+        function activatePointer(e) {
+            const ndc = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+            raycaster.setFromCamera(ndc, camera);
+            const hits = raycaster.intersectObjects(rayTargets, false);
+            if (hits.length) {
+                const panel = hits[0].object.userData.panel;
+                const regionIdx = regionAt(panel, hits[0].uv);
+                if (panel === musicPanel && regionIdx >= 0) {
+                    musicAction(panel.regions[regionIdx].action);
+                }
+            }
+        }
 
         // ---------------------------------------------------------------------
         // VR session wiring
@@ -606,7 +656,7 @@
                 // Starfield slow rotation
                 stars.rotation.y += dt * 0.008;
 
-                // VR controller lasers
+                // VR controller lasers + thumbstick turn (seated turn without moving your head)
                 if (renderer.xr.isPresenting && controller1 && controller2) {
                     [controller1, controller2].forEach((c) => {
                         const dir = new THREE.Vector3(0, 0, -1).applyQuaternion(c.quaternion);
@@ -615,9 +665,18 @@
                         if (res) { setHover(res); }
                         else if (hoveredPanel) clearHover();
                     });
+                    // Thumbstick X turns the whole stage (cycles panels around a seated user).
+                    [controller1, controller2].forEach((c) => {
+                        const src = c.userData && c.userData.inputSource;
+                        const gp = src && src.gamepad;
+                        if (!gp || !gp.axes) return;
+                        const x = gp.axes[2] ?? gp.axes[0];   // prefer right-hand stick X
+                        if (x != null && Math.abs(x) > 0.15) {
+                            stage.rotation.y += x * dt * 1.8;
+                        }
+                    });
                 }
 
-                controls.update();
                 renderer.render(scene, camera);
             });
         }
