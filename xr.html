@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jonathan Korstad — XR Portfolio</title>
+    <meta name="description" content="Immersive WebXR portfolio of Jonathan Korstad — AI Engineer & Accessibility Analyst.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #05060a; font-family: 'Segoe UI', system-ui, sans-serif; color: #fff; }
+        #container { position: fixed; inset: 0; }
+        canvas { display: block; }
+
+        /* 2D overlay (before entering immersive VR, and for non-XR fallback) */
+        #overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(ellipse at center, #0a0d16 0%, #05060a 70%);
+            text-align: center; padding: 24px;
+        }
+        #overlay h1 { font-size: clamp(28px, 6vw, 56px); font-weight: 800; letter-spacing: -0.5px; }
+        #overlay h1 span { color: #007bff; }
+        #overlay p.sub { color: #9aa; margin: 10px 0 28px; max-width: 520px; line-height: 1.5; font-size: 15px; }
+        #overlay .cta-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+        #overlay button {
+            padding: 14px 28px; border-radius: 999px; border: 1px solid #334; cursor: pointer;
+            font-size: 16px; font-weight: 600; background: #1a2030; color: #fff; transition: all .2s;
+        }
+        #overlay button.primary { background: #007bff; border-color: #007bff; }
+        #overlay button.primary:hover { background: #0056b3; }
+        #overlay button:hover { background: #232b3d; }
+        #overlay .hint { margin-top: 22px; color: #667; font-size: 12px; max-width: 460px; line-height: 1.5; }
+        #overlay .vr-enter { display: none; }
+        #overlay .vr-enter.show { display: block; }
+        #overlay .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 16px; }
+        #overlay .badge.xr { background: rgba(0,123,255,.15); color: #4da3ff; border: 1px solid rgba(0,123,255,.3); }
+        #overlay .badge.flat { background: rgba(255,255,255,.06); color: #99a; border: 1px solid rgba(255,255,255,.12); }
+
+        /* Small exit button shown while immersive */
+        #exit-xr {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 20;
+            padding: 10px 22px; border-radius: 999px; background: rgba(20,26,40,.85); color: #fff;
+            border: 1px solid #334; cursor: pointer; font-size: 13px; display: none;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="container"></div>
+
+    <div id="overlay">
+        <span class="badge xr" id="xr-badge">WebXR Ready</span>
+        <span class="badge flat" id="flat-badge" style="display:none">3D Mode (no headset detected)</span>
+        <h1>Jonathan <span>Korstad</span></h1>
+        <p class="sub">Welcome to the immersive portfolio. Explore floating panels of my work, and queue up some background music while you look around.</p>
+        <div class="cta-row">
+            <button class="primary vr-enter" id="enter-vr">🥽 Enter XR</button>
+            <button id="enter-3d">Explore in 3D</button>
+            <a href="./" style="text-decoration:none;"><button>← Back to site</button></a>
+        </div>
+        <p class="hint" id="hint">Use the trigger to point and select panels. The music panel lets you browse and queue tracks.</p>
+    </div>
+
+    <button id="exit-xr">Exit XR</button>
+
+    <script src="music-player.js"></script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { VRButton } from 'three/addons/webxr/VRButton.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // ---------------------------------------------------------------------
+        // WebXR capability detection
+        // ---------------------------------------------------------------------
+        const hasXR = 'xr' in navigator;
+        const overlay = document.getElementById('overlay');
+        const xrBadge = document.getElementById('xr-badge');
+        const flatBadge = document.getElementById('flat-badge');
+        const enterVR = document.getElementById('enter-vr');
+        const enter3D = document.getElementById('enter-3d');
+        const exitXR = document.getElementById('exit-xr');
+        const hint = document.getElementById('hint');
+
+        let immersiveSupported = false;
+        if (hasXR) {
+            try { immersiveSupported = await navigator.xr.isSessionSupported('immersive-vr'); } catch (e) {}
+        }
+
+        if (immersiveSupported) {
+            enterVR.classList.add('show');
+            xrBadge.textContent = 'WebXR Ready — headset detected';
+            hint.textContent = 'Enter XR to step into the space. Point with your controller and pull the trigger to select panels and queue music.';
+        } else {
+            flatBadge.style.display = 'inline-block';
+            xrBadge.style.display = 'none';
+            hint.textContent = 'No WebXR headset detected, so you\u2019re in desktop 3D mode. Click and drag to look around; click a panel to focus it. Works best on a Quest 3 browser.';
+        }
+
+        // ---------------------------------------------------------------------
+        // Music engine (shared with flat site)
+        // ---------------------------------------------------------------------
+        const music = new window.MusicPlayer({ owner: 'jpalmer95', repo: 'OpenMusic' });
+
+        // ---------------------------------------------------------------------
+        // Three.js scene
+        // ---------------------------------------------------------------------
+        const container = document.getElementById('container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x05060a, 0.016);
+
+        const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 200);
+        camera.position.set(0, 1.6, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        renderer.setSize(innerWidth, innerHeight);
+        renderer.xr.enabled = true;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.1;
+        container.appendChild(renderer.domElement);
+
+        // Lights
+        scene.add(new THREE.HemisphereLight(0x8899cc, 0x111122, 0.5));
+        const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+        dir.position.set(5, 10, 5);
+        scene.add(dir);
+
+        // Starfield
+        const starsGeo = new THREE.BufferGeometry();
+        const starCount = 1800;
+        const starPos = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount; i++) {
+            const r = 40 + Math.random() * 120;
+            const t = Math.random() * Math.PI * 2;
+            const p = Math.acos(2 * Math.random() - 1);
+            starPos[i * 3] = r * Math.sin(p) * Math.cos(t);
+            starPos[i * 3 + 1] = r * Math.sin(p) * Math.sin(t);
+            starPos[i * 3 + 2] = r * Math.cos(p);
+        }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const stars = new THREE.Points(starsGeo, new THREE.PointsMaterial({ color: 0xaabbee, size: 0.12, sizeAttenuation: true, transparent: true, opacity: 0.85 }));
+        scene.add(stars);
+
+        // Floor ring (ground reference)
+        const ringGeo = new THREE.RingGeometry(3.4, 3.45, 96);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x007bff, side: THREE.DoubleSide, transparent: true, opacity: 0.35 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.y = -0.02;
+        scene.add(ring);
+
+        // ---------------------------------------------------------------------
+        // Content panels — rendered to CanvasTextures, clickable via raycast UV
+        // ---------------------------------------------------------------------
+        class Panel {
+            constructor({ title, width = 1.7, height = 1.1, draw }) {
+                this.width = width; this.height = height;
+                this.canvas = document.createElement('canvas');
+                this.canvas.width = 1024; this.canvas.height = 640;
+                this.ctx = this.canvas.getContext('2d');
+                this.texture = new THREE.CanvasTexture(this.canvas);
+                this.texture.colorSpace = THREE.SRGBColorSpace;
+                this.texture.minFilter = THREE.LinearFilter;
+                this.draw = draw;
+                this.regions = [];   // {x,y,w,h,action} in UV space (0..1)
+                this.mesh = new THREE.Mesh(
+                    new THREE.PlaneGeometry(width, height),
+                    new THREE.MeshBasicMaterial({ map: this.texture, side: THREE.DoubleSide, transparent: true })
+                );
+                this.mesh.userData.panel = this;
+                this.redraw();
+                this._highlight = null;
+            }
+            setRegions(regions) { this.regions = regions; }
+            redraw() {
+                            this._highlight = null;
+                            const c = this.ctx, w = this.canvas.width, h = this.canvas.height;
+                            c.clearRect(0, 0, w, h);
+                            // Panel background
+                            const g = c.createLinearGradient(0, 0, 0, h);
+                            g.addColorStop(0, '#161b28'); g.addColorStop(1, '#0c0f18');
+                            c.fillStyle = g;
+                            this._rr(c, 0, 0, w, h, 28); c.fill();
+                            c.strokeStyle = 'rgba(0,123,255,.35)'; c.lineWidth = 4;
+                            this._rr(c, 2, 2, w - 4, h - 4, 26); c.stroke();
+                            if (this.draw) this.draw(c, w, h);
+                            this.texture.needsUpdate = true;
+                        }
+            _rr(c, x, y, w, h, r) {
+                r = Math.min(r, w / 2, h / 2);
+                c.beginPath();
+                c.moveTo(x + r, y);
+                c.arcTo(x + w, y, x + w, y + h, r);
+                c.arcTo(x + w, y + h, x, y + h, r);
+                c.arcTo(x, y + h, x, y, r);
+                c.arcTo(x, y, x + w, y, r);
+                c.closePath();
+            }
+            button(c, uv, label, opts = {}) {
+                const x = uv.x * this.canvas.width, y = uv.y * this.canvas.height;
+                const bw = uv.w * this.canvas.width, bh = uv.h * this.canvas.height;
+                const fill = opts.fill || 'rgba(0,123,255,.9)';
+                c.fillStyle = fill;
+                this._rr(c, x, y, bw, bh, 10); c.fill();
+                c.fillStyle = opts.textColor || '#fff';
+                c.font = `600 ${Math.floor(opts.fontSize || 26)}px 'Segoe UI', sans-serif`;
+                c.textAlign = 'center'; c.textBaseline = 'middle';
+                c.fillText(label, x + bw / 2, y + bh / 2 + 1);
+            }
+            text(c, x, y, str, opts = {}) {
+                c.fillStyle = opts.color || '#dfe6f3';
+                c.font = `${opts.weight || 400} ${opts.size || 26}px 'Segoe UI', sans-serif`;
+                c.textAlign = opts.align || 'left'; c.textBaseline = 'top';
+                const lines = String(str).split('\n');
+                lines.forEach((ln, i) => c.fillText(ln, x, y + i * ((opts.size || 26) * (opts.lh || 1.35))));
+            }
+            // Highlight a region (index) by redrawing a glow overlay
+            highlight(i) {
+                if (this._highlight === i) return;
+                this.redraw();
+                this._highlight = i;
+                const c = this.ctx;
+                if (i != null && this.regions[i]) {
+                    const r = this.regions[i];
+                    const x = r.x * this.canvas.width, y = r.y * this.canvas.height;
+                    const bw = r.w * this.canvas.width, bh = r.h * this.canvas.height;
+                    c.strokeStyle = '#4da3ff'; c.lineWidth = 8;
+                    this._rr(c, x - 4, y - 4, bw + 8, bh + 8, 12); c.stroke();
+                }
+                this.texture.needsUpdate = true;
+            }
+        }
+
+        // ----- Panel: About -----
+        const aboutPanel = new Panel({
+            title: 'About', width: 1.8, height: 1.3,
+            draw(c, w, h) {
+                const t = this;
+                t.text(c, 40, 30, 'JONATHAN KORSTAD, CPWA', { size: 34, weight: 700, color: '#fff' });
+                t.text(c, 40, 80, 'Senior Accessibility Analyst & AI Engineer', { size: 26, color: '#4da3ff' });
+                t.text(c, 40, 140,
+                    'Building scalable intelligent systems and bridging digital\naccessibility with AI. Founder of Kynda Coffee. Deep RL,\ngenerative 3D/audio, and agents for automation.',
+                    { size: 24, lh: 1.4, color: '#c6d0e0' });
+            }
+        });
+        aboutPanel.setRegions([]);
+
+        // ----- Panel: Skills -----
+        const skills = ['Deep RL', 'PyTorch', 'LangChain', 'Smolagents', 'Generative 3D/Audio', 'Python', 'C++', 'React', 'Unreal', 'Godot', 'Accessibility', 'Computer Vision'];
+        const skillsPanel = new Panel({
+            title: 'Skills', width: 1.8, height: 1.0,
+            draw(c, w, h) {
+                const t = this;
+                t.text(c, 40, 30, 'TECHNICAL SKILLS', { size: 30, weight: 700, color: '#fff' });
+                let x = 40, y = 100;
+                skills.forEach((s) => {
+                    c.font = "500 22px 'Segoe UI', sans-serif";
+                    const tw = c.measureText(s).width + 32;
+                    if (x + tw > w - 40) { x = 40; y += 52; }
+                    c.fillStyle = 'rgba(0,123,255,.14)';
+                    this._rr(c, x, y, tw, 40, 20); c.fill();
+                    c.fillStyle = '#9fd0ff';
+                    c.textAlign = 'left'; c.textBaseline = 'top';
+                    c.fillText(s, x + 16, y + 10);
+                    x += tw + 12;
+                });
+            }
+        });
+        skillsPanel.setRegions([]);
+
+        // ----- Panel: Projects -----
+        const projects = [
+            { name: 'ForgeDNA', desc: 'AI game-dev pipeline (17 agents)' },
+            { name: 'MenuMetrics', desc: 'Recipe costing & inventory SaaS' },
+            { name: 'SynapseJourney', desc: 'Open-source learning platform' },
+            { name: 'SuperSonic', desc: 'WebXR VR flight/combat game' },
+            { name: 'Agent Oracle', desc: 'Rust data oracle w/ L402' },
+            { name: 'GetFreeQuote', desc: 'Next.js services marketplace' },
+        ];
+        const projectsPanel = new Panel({
+            title: 'Projects', width: 1.9, height: 1.3,
+            draw(c, w, h) {
+                const t = this;
+                t.text(c, 40, 30, 'FEATURED PROJECTS', { size: 30, weight: 700, color: '#fff' });
+                const colW = (w - 100) / 2;
+                projects.forEach((p, i) => {
+                    const col = i % 2, row = Math.floor(i / 2);
+                    const x = 40 + col * (colW + 20), y = 100 + row * 130;
+                    c.fillStyle = 'rgba(255,255,255,.05)';
+                    t._rr(c, x, y, colW, 110, 12); c.fill();
+                    t.text(c, x + 16, y + 12, p.name, { size: 26, weight: 700, color: '#fff' });
+                    c.fillStyle = '#8899bb';
+                    c.font = "400 20px 'Segoe UI', sans-serif";
+                    c.fillText(p.desc, x + 16, y + 54, colW - 32);
+                });
+            }
+        });
+        projectsPanel.setRegions([]);
+
+        // ----- Panel: Experience -----
+        const expPanel = new Panel({
+            title: 'Experience', width: 1.9, height: 1.1,
+            draw(c, w, h) {
+                const t = this;
+                t.text(c, 40, 30, 'EXPERIENCE', { size: 30, weight: 700, color: '#fff' });
+                const rows = [
+                    ['Visa — Sr Accessibility Analyst & AI Engineer', '2022 – Present'],
+                    ['Kynda Coffee — Founder & Owner', '2020 – Present'],
+                    ['MicroAssist — Accessibility Analyst', '2021 – 2022'],
+                ];
+                rows.forEach((r, i) => {
+                    const y = 100 + i * 84;
+                    c.fillStyle = '#4da3ff'; c.beginPath(); c.arc(52, y + 12, 6, 0, Math.PI * 2); c.fill();
+                    t.text(c, 74, y - 4, r[0], { size: 25, weight: 600, color: '#fff' });
+                    t.text(c, 74, y + 26, r[1], { size: 20, color: '#8899bb' });
+                });
+            }
+        });
+        expPanel.setRegions([]);
+
+        // ----- Panel: Music (interactive) -----
+        const musicPanel = new Panel({
+            title: 'Music', width: 1.9, height: 1.4,
+            draw(c, w, h) {
+                const t = this;
+                t.text(c, 40, 26, 'BACKGROUND MUSIC', { size: 28, weight: 700, color: '#fff' });
+                const tr = music.currentTrack();
+                t.text(c, 40, 66, tr ? '▶ ' + tr.name : (music.queue.length ? 'Ready' : 'Add tracks to listen'), { size: 20, color: '#9fd0ff' });
+                // Controls row
+                t.button(c, { x: 40 / w, y: 100 / h, w: 120 / w, h: 64 / h }, '⏮', { fill: 'rgba(255,255,255,.08)', fontSize: 30 });
+                t.button(c, { x: 170 / w, y: 100 / h, w: 220 / w, h: 64 / h }, music.isPlaying ? 'Pause' : 'Play', { fontSize: 26 });
+                t.button(c, { x: 400 / w, y: 100 / h, w: 120 / w, h: 64 / h }, '⏭', { fill: 'rgba(255,255,255,.08)', fontSize: 30 });
+                t.button(c, { x: 530 / w, y: 100 / h, w: 120 / w, h: 64 / h }, music.shuffle ? '🔀 ON' : '🔀', { fill: music.shuffle ? 'rgba(0,123,255,.9)' : 'rgba(255,255,255,.08)', fontSize: 20 });
+                t.button(c, { x: 660 / w, y: 100 / h, w: 160 / w, h: 64 / h }, 'Library', { fill: 'rgba(20,140,90,.85)', fontSize: 24 });
+                t.button(c, { x: 830 / w, y: 100 / h, w: 150 / w, h: 64 / h }, 'Queue', { fill: 'rgba(120,80,180,.85)', fontSize: 24 });
+                // Track list preview (5 rows)
+                const list = music._viewList || [];
+                list.slice(0, 5).forEach((item, i) => {
+                    const y = 184 + i * 46;
+                    c.fillStyle = i === music._viewCursor ? 'rgba(0,123,255,.18)' : 'rgba(255,255,255,.04)';
+                    t._rr(c, 40, y, w - 80, 38, 8); c.fill();
+                    t.text(c, 52, y + 8, (i + 1) + '. ' + item.name, { size: 19, color: '#cfd8e8' });
+                });
+                if (!list.length) t.text(c, 52, 194, 'Open Library or Queue to browse', { size: 20, color: '#667' });
+            }
+        });
+        music._viewList = [];
+        music._viewCursor = -1;
+
+        // Music list browsing state
+        let musicView = null; // null | 'library' | 'queue'
+
+        // Static control regions (indices 0-5)
+        const CTRL_REGIONS = [
+            { x: 40 / 1024, y: 100 / 640, w: 120 / 1024, h: 64 / 640, action: 'prev' },
+            { x: 170 / 1024, y: 100 / 640, w: 220 / 1024, h: 64 / 640, action: 'toggle' },
+            { x: 400 / 1024, y: 100 / 640, w: 120 / 1024, h: 64 / 640, action: 'next' },
+            { x: 530 / 1024, y: 100 / 640, w: 120 / 1024, h: 64 / 640, action: 'shuffle' },
+            { x: 660 / 1024, y: 100 / 640, w: 160 / 1024, h: 64 / 640, action: 'library' },
+            { x: 830 / 1024, y: 100 / 640, w: 150 / 1024, h: 64 / 640, action: 'queue' },
+        ];
+
+        function buildMusicList(view) {
+            if (view === 'library') return music.library.map((t) => ({ name: t.name, kind: 'lib', track: t }));
+            if (view === 'queue') return music.queue.map((t, i) => ({ name: t.name, kind: 'q', idx: i }));
+            return [];
+        }
+
+        function rebuildRegions() {
+            // Rebuild the region map: static controls + one region per visible list row.
+            const list = music._viewList || [];
+            const rows = list.slice(0, 5);
+            const regions = CTRL_REGIONS.slice();
+            rows.forEach((item, i) => {
+                const y = 184 + i * 46;
+                regions.push({ x: 40 / 1024, y: y / 640, w: (1024 - 80) / 1024, h: 38 / 640, action: 'list:' + i });
+            });
+            musicPanel.setRegions(regions);
+        }
+
+        function applyMusicView(view) {
+            musicView = view;
+            music._viewList = buildMusicList(view);
+            music._viewCursor = music._viewList.length ? 0 : -1;
+            rebuildRegions();
+            musicPanel.redraw();
+        }
+
+        function musicAction(action) {
+            if (action === 'prev') music.playPrev();
+            else if (action === 'toggle') music.toggle();
+            else if (action === 'next') music.playNext();
+            else if (action === 'shuffle') music.toggleShuffle();
+            else if (action === 'library') { applyMusicView(musicView === 'library' ? null : 'library'); }
+            else if (action === 'queue') { applyMusicView(musicView === 'queue' ? null : 'queue'); }
+            else if (action && action.startsWith('list:')) {
+                const i = parseInt(action.slice(5), 10);
+                const list = music._viewList || [];
+                const item = list[i];
+                if (!item) return;
+                if (musicView === 'library' && item.track) {
+                    music.addToQueue(item.track);
+                    if (!music.isPlaying) music.play();
+                } else if (musicView === 'queue' && item.idx != null) {
+                    music.playTrack(item.idx);
+                }
+            }
+            musicPanel.redraw();
+        }
+        rebuildRegions();
+        musicPanel.redraw();
+        // Re-render music panel whenever engine state changes
+        music.on('state', () => { if (musicView) { applyMusicView(musicView); } musicPanel.redraw(); });
+        music.on('trackchange', () => musicPanel.redraw());
+
+        // ---------------------------------------------------------------------
+        // Position panels in a ring around the user
+        // ---------------------------------------------------------------------
+        const panels = [aboutPanel, skillsPanel, projectsPanel, expPanel, musicPanel];
+        const panelRadius = 3.2;
+        panels.forEach((p, i) => {
+            const angle = (i / panels.length) * Math.PI * 2 - Math.PI / 2;
+            p.mesh.position.set(Math.cos(angle) * panelRadius, 1.6, Math.sin(angle) * panelRadius);
+            p.mesh.lookAt(0, 1.6, 0);
+            scene.add(p.mesh);
+        });
+
+        // Gentle floating animation
+        const basePositions = panels.map((p) => p.mesh.position.clone());
+
+        // ---------------------------------------------------------------------
+        // Interaction: raycast + lasers (controllers in VR, mouse in 3D)
+        // ---------------------------------------------------------------------
+        const raycaster = new THREE.Raycaster();
+        const rayTargets = panels.map((p) => p.mesh);
+        const cursorMesh = new THREE.Mesh(new THREE.SphereGeometry(0.025, 12, 12), new THREE.MeshBasicMaterial({ color: 0x4da3ff }));
+        cursorMesh.visible = false;
+        scene.add(cursorMesh);
+
+        let hoveredPanel = null, hoveredRegion = null;
+
+        function raycastFrom(origin, dir) {
+            raycaster.set(origin, dir);
+            const hits = raycaster.intersectObjects(rayTargets, false);
+            if (hits.length) {
+                const panel = hits[0].object.userData.panel;
+                const uv = hits[0].uv;
+                let regionIdx = null;
+                if (uv && panel.regions.length) {
+                    regionIdx = panel.regions.findIndex((r) =>
+                        uv.x >= r.x && uv.x <= r.x + r.w && uv.y >= r.y && uv.y <= r.y + r.h);
+                }
+                return { panel, regionIdx, point: hits[0].point };
+            }
+            return null;
+        }
+
+        function clearHover() {
+            if (hoveredPanel) hoveredPanel.highlight(null);
+            hoveredPanel = null; hoveredRegion = null;
+            cursorMesh.visible = false;
+        }
+        function setHover(res) {
+            if (hoveredPanel && hoveredPanel !== res.panel) hoveredPanel.highlight(null);
+            hoveredPanel = res.panel;
+            hoveredRegion = res.regionIdx;
+            if (res.regionIdx != null && res.regionIdx >= 0) res.panel.highlight(res.regionIdx);
+            else res.panel.highlight(-1);
+            cursorMesh.visible = true;
+            cursorMesh.position.copy(res.point);
+        }
+
+        function activate(res) {
+            if (!res) return;
+            if (res.regionIdx != null && res.regionIdx >= 0) {
+                const action = res.panel.regions[res.regionIdx].action;
+                if (res.panel === musicPanel) musicAction(action);
+                else if (action) window[action] && window[action]();
+            }
+        }
+
+        // VR controllers
+        let controller1, controller2;
+        function buildController(index) {
+            const c = renderer.xr.getController(index);
+            // A short ray line attached to the controller for pointing feedback
+            const rayLine = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, -0.05), new THREE.Vector3(0, 0, -4)]),
+                new THREE.LineBasicMaterial({ color: 0x4da3ff, transparent: true, opacity: 0.7 })
+            );
+            c.add(rayLine);
+            c.addEventListener('selectstart', () => {
+                const dir = new THREE.Vector3(0, 0, -1).applyQuaternion(c.quaternion);
+                const origin = c.position.clone();
+                activate(raycastFrom(origin, dir));
+            });
+            return c;
+        }
+
+        // Mouse fallback (desktop 3D)
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 1.6, 0);
+        controls.enableDamping = true;
+        controls.enablePan = false;
+        controls.minDistance = 1.5;
+        controls.maxDistance = 8;
+        controls.maxPolarAngle = Math.PI * 0.85;
+
+        renderer.domElement.addEventListener('click', (e) => {
+            if (renderer.xr.isPresenting) return;
+            const ndc = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+            raycaster.setFromCamera(ndc, camera);
+            const hits = raycaster.intersectObjects(rayTargets, false);
+            if (hits.length) {
+                const panel = hits[0].object.userData.panel;
+                const uv = hits[0].uv;
+                let regionIdx = null;
+                if (uv && panel.regions.length) {
+                    regionIdx = panel.regions.findIndex((r) => uv.x >= r.x && uv.x <= r.x + r.w && uv.y >= r.y && uv.y <= r.y + r.h);
+                }
+                if (panel === musicPanel && regionIdx != null && regionIdx >= 0) {
+                    musicAction(panel.regions[regionIdx].action);
+                }
+            }
+        });
+
+        // Mouse hover highlight (throttled)
+        renderer.domElement.addEventListener('mousemove', (e) => {
+            if (renderer.xr.isPresenting) return;
+            const ndc = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+            raycaster.setFromCamera(ndc, camera);
+            const hits = raycaster.intersectObjects(rayTargets, false);
+            if (hits.length) {
+                const panel = hits[0].object.userData.panel;
+                const uv = hits[0].uv;
+                let regionIdx = null;
+                if (uv && panel.regions.length) {
+                    regionIdx = panel.regions.findIndex((r) => uv.x >= r.x && uv.x <= r.x + r.w && uv.y >= r.y && uv.y <= r.y + r.h);
+                }
+                if (hoveredPanel && hoveredPanel !== panel) hoveredPanel.highlight(null);
+                hoveredPanel = panel; hoveredRegion = regionIdx;
+                if (panel === musicPanel) panel.highlight(regionIdx != null && regionIdx >= 0 ? regionIdx : -1);
+            } else {
+                if (hoveredPanel) hoveredPanel.highlight(null);
+                hoveredPanel = null; hoveredRegion = null;
+            }
+        });
+
+        // ---------------------------------------------------------------------
+        // VR session wiring
+        // ---------------------------------------------------------------------
+        renderer.xr.addEventListener('sessionstart', () => {
+            overlay.style.display = 'none';
+            exitXR.style.display = 'block';
+            if (!controller1) { controller1 = buildController(0); scene.add(controller1); }
+            if (!controller2) { controller2 = buildController(1); scene.add(controller2); }
+            cursorMesh.visible = true;
+        });
+        renderer.xr.addEventListener('sessionend', () => {
+            overlay.style.display = 'flex';
+            exitXR.style.display = 'none';
+            cursorMesh.visible = false;
+        });
+
+        // ---------------------------------------------------------------------
+        // Buttons
+        // ---------------------------------------------------------------------
+        if (immersiveSupported) {
+            const vrBtn = VRButton.createButton(renderer);
+            vrBtn.style.position = 'fixed';
+            vrBtn.style.bottom = '20px';
+            vrBtn.style.left = '50%';
+            vrBtn.style.transform = 'translateX(-50%)';
+            vrBtn.style.zIndex = '15';
+            vrBtn.id = 'vr-button';
+            vrBtn.style.display = 'none';
+            document.body.appendChild(vrBtn);
+            enterVR.addEventListener('click', () => vrBtn.click());
+        }
+        enter3D.addEventListener('click', () => { overlay.style.display = 'none'; });
+        exitXR.addEventListener('click', () => { if (renderer.xr.getSession()) renderer.xr.getSession().end(); });
+
+        // ---------------------------------------------------------------------
+        // Animation loop
+        // ---------------------------------------------------------------------
+        const clock = new THREE.Clock();
+        function animate() {
+            renderer.setAnimationLoop((t) => {
+                const dt = clock.getDelta();
+
+                // Float panels (keep them facing the user — no continuous Y spin)
+                panels.forEach((p, i) => {
+                    const b = basePositions[i];
+                    p.mesh.position.y = b.y + Math.sin(t / 1000 + i) * 0.06;
+                    p.mesh.lookAt(0, 1.6, 0);
+                });
+
+                // Starfield slow rotation
+                stars.rotation.y += dt * 0.008;
+
+                // VR controller lasers
+                if (renderer.xr.isPresenting && controller1 && controller2) {
+                    [controller1, controller2].forEach((c) => {
+                        const dir = new THREE.Vector3(0, 0, -1).applyQuaternion(c.quaternion);
+                        const origin = c.position.clone();
+                        const res = raycastFrom(origin, dir);
+                        if (res) { setHover(res); }
+                        else if (hoveredPanel) clearHover();
+                    });
+                }
+
+                controls.update();
+                renderer.render(scene, camera);
+            });
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+        });
+
+        console.log('[XR Portfolio] ready. immersiveSupported =', immersiveSupported);
+    </script>
+</body>
+</html>
