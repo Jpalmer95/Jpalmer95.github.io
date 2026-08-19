@@ -42,6 +42,26 @@
             padding: 10px 22px; border-radius: 999px; background: rgba(20,26,40,.85); color: #fff;
             border: 1px solid #334; cursor: pointer; font-size: 13px; display: none;
         }
+
+        /* Redirect confirmation overlay (SuperSonic launch) */
+        #redirect-overlay {
+            position: fixed; inset: 0; z-index: 40; display: none;
+            align-items: center; justify-content: center;
+            background: rgba(5,6,10,.9); backdrop-filter: blur(4px); padding: 24px;
+        }
+        #redirect-overlay.show { display: flex; }
+        .ro-box {
+            background: #141a28; border: 1px solid rgba(0,123,255,.4); border-radius: 16px;
+            max-width: 440px; width: 100%; padding: 28px; text-align: center; box-shadow: 0 24px 80px rgba(0,0,0,.6);
+        }
+        .ro-title { font-size: 26px; font-weight: 800; margin-bottom: 14px; color: #fff; }
+        .ro-title span { color: #0af; }
+        .ro-box p { color: #9aa; font-size: 14px; line-height: 1.5; margin-bottom: 22px; }
+        .ro-actions { display: flex; gap: 12px; justify-content: center; }
+        .ro-actions button { padding: 12px 22px; border-radius: 999px; cursor: pointer; font-size: 15px; font-weight: 600; border: 1px solid #334; background: #1a2030; color: #fff; transition: all .2s; }
+        .ro-actions button.ro-go { background: #007bff; border-color: #007bff; }
+        .ro-actions button.ro-go:hover { background: #0056b3; }
+        .ro-actions button:hover { background: #232b3d; }
     </style>
     <script type="importmap">
         {
@@ -69,6 +89,17 @@
     </div>
 
     <button id="exit-xr">Exit XR</button>
+
+    <div id="redirect-overlay">
+        <div class="ro-box">
+            <div class="ro-title">🚀 Launching <span>SuperSonic</span></div>
+            <p>You're about to leave the portfolio and jump into the SuperSonic WebXR game (a brand-new browser/VR tab).</p>
+            <div class="ro-actions">
+                <button id="ro-go" class="ro-go">Let's Go</button>
+                <button id="ro-cancel">Stay Here</button>
+            </div>
+        </div>
+    </div>
 
     <script src="music-player.js"></script>
 
@@ -282,12 +313,12 @@
 
         // ----- Panel: Projects -----
         const projects = [
-            { name: 'ForgeDNA', desc: 'AI game-dev pipeline (17 agents)' },
-            { name: 'MenuMetrics', desc: 'Recipe costing & inventory SaaS' },
-            { name: 'SynapseJourney', desc: 'Open-source learning platform' },
-            { name: 'SuperSonic', desc: 'WebXR VR flight/combat game' },
-            { name: 'Agent Oracle', desc: 'Rust data oracle w/ L402' },
-            { name: 'GetFreeQuote', desc: 'Next.js services marketplace' },
+            { name: 'ForgeDNA', desc: 'AI game-dev pipeline (17 agents)', link: null },
+            { name: 'MenuMetrics', desc: 'Recipe costing & inventory SaaS', link: null },
+            { name: 'SynapseJourney', desc: 'Open-source learning platform', link: null },
+            { name: 'SuperSonic', desc: 'WebXR VR flight/combat game', link: 'https://jpalmer95.github.io/SuperSonic/', play: true },
+            { name: 'Agent Oracle', desc: 'Rust data oracle w/ L402', link: null },
+            { name: 'GetFreeQuote', desc: 'Next.js services marketplace', link: null },
         ];
         const projectsPanel = new Panel({
             title: 'Projects', width: 1.9, height: 1.3,
@@ -298,16 +329,28 @@
                 projects.forEach((p, i) => {
                     const col = i % 2, row = Math.floor(i / 2);
                     const x = 40 + col * (colW + 20), y = 100 + row * 130;
-                    c.fillStyle = 'rgba(255,255,255,.05)';
+                    c.fillStyle = p.play ? 'rgba(0,123,255,.16)' : 'rgba(255,255,255,.05)';
                     t._rr(c, x, y, colW, 110, 12); c.fill();
-                    t.text(c, x + 16, y + 12, p.name, { size: 26, weight: 700, color: '#fff' });
+                    if (p.play) { c.strokeStyle = 'rgba(0,123,255,.7)'; c.lineWidth = 4; t._rr(c, x, y, colW, 110, 12); c.stroke(); }
+                    c.fillStyle = p.play ? '#6db7ff' : '#fff';
+                    c.font = "700 26px 'Segoe UI', sans-serif";
+                    c.textAlign = 'left'; c.textBaseline = 'top';
+                    c.fillText(p.name, x + 16, y + 12);
                     c.fillStyle = '#8899bb';
                     c.font = "400 20px 'Segoe UI', sans-serif";
                     c.fillText(p.desc, x + 16, y + 54, colW - 32);
+                    if (p.play) {
+                        c.fillStyle = '#0af';
+                        c.font = "700 20px 'Segoe UI', sans-serif";
+                        c.fillText('▶ PLAY IN VR →', x + 16, y + 82);
+                    }
                 });
             }
         });
-        projectsPanel.setRegions([]);
+        // SuperSonic card is index 3: col 1, row 1. Make it a clickable region.
+        projectsPanel.setRegions([
+            { x: 522 / 1024, y: 230 / 640, w: 462 / 1024, h: 110 / 640, action: 'supersonic' },
+        ]);
 
         // ----- Panel: Experience -----
         const expPanel = new Panel({
@@ -343,26 +386,39 @@
                 t.button(c, { x: 170 / w, y: 100 / h, w: 220 / w, h: 64 / h }, music.isPlaying ? 'Pause' : 'Play', { fontSize: 26 });
                 t.button(c, { x: 400 / w, y: 100 / h, w: 120 / w, h: 64 / h }, '⏭', { fill: 'rgba(255,255,255,.08)', fontSize: 30 });
                 t.button(c, { x: 530 / w, y: 100 / h, w: 120 / w, h: 64 / h }, music.shuffle ? '🔀 ON' : '🔀', { fill: music.shuffle ? 'rgba(0,123,255,.9)' : 'rgba(255,255,255,.08)', fontSize: 20 });
-                t.button(c, { x: 660 / w, y: 100 / h, w: 160 / w, h: 64 / h }, 'Library', { fill: 'rgba(20,140,90,.85)', fontSize: 24 });
-                t.button(c, { x: 830 / w, y: 100 / h, w: 150 / w, h: 64 / h }, 'Queue', { fill: 'rgba(120,80,180,.85)', fontSize: 24 });
-                // Track list preview (5 rows)
+                t.button(c, { x: 660 / w, y: 100 / h, w: 160 / w, h: 64 / h }, musicView === 'library' ? 'Library ✓' : 'Library', { fill: 'rgba(20,140,90,.85)', fontSize: 22 });
+                t.button(c, { x: 830 / w, y: 100 / h, w: 150 / w, h: 64 / h }, musicView === 'queue' ? 'Queue ✓' : 'Queue', { fill: 'rgba(120,80,180,.85)', fontSize: 22 });
+                // Track list preview (scrollable)
                 const list = music._viewList || [];
-                list.slice(0, 5).forEach((item, i) => {
+                const scroll = music._scroll || 0;
+                const ROWS = 4;
+                const visible = list.slice(scroll, scroll + ROWS);
+                visible.forEach((item, i) => {
                     const y = 184 + i * 46;
-                    c.fillStyle = i === music._viewCursor ? 'rgba(0,123,255,.18)' : 'rgba(255,255,255,.04)';
-                    t._rr(c, 40, y, w - 80, 38, 8); c.fill();
-                    t.text(c, 52, y + 8, (i + 1) + '. ' + item.name, { size: 19, color: '#cfd8e8' });
+                    const abs = scroll + i;   // absolute index into the full list
+                    const isCur = (musicView === 'queue') ? (abs === music.currentIndex) : false;
+                    c.fillStyle = isCur ? 'rgba(0,123,255,.28)' : 'rgba(255,255,255,.04)';
+                    t._rr(c, 40, y, w - 130, 38, 8); c.fill();
+                    t.text(c, 52, y + 8, (abs + 1) + '. ' + item.name, { size: 18, color: isCur ? '#fff' : '#cfd8e8' });
                 });
-                if (!list.length) t.text(c, 52, 194, 'Open Library or Queue to browse', { size: 20, color: '#667' });
+                if (!list.length) t.text(c, 52, 194, 'Tap "Library" to browse tracks, "Queue" to see your queue', { size: 18, color: '#667' });
+                // Scroll indicators
+                if (musicView) {
+                    const canUp = scroll > 0, canDn = scroll + ROWS < list.length;
+                    t.button(c, { x: 856 / w, y: 184 / h, w: 128 / w, h: 44 / h }, '▲ Up', { fill: canUp ? 'rgba(0,123,255,.9)' : 'rgba(255,255,255,.06)', fontSize: 18 });
+                    t.button(c, { x: 856 / w, y: 240 / h, w: 128 / w, h: 44 / h }, '▼ Dn', { fill: canDn ? 'rgba(0,123,255,.9)' : 'rgba(255,255,255,.06)', fontSize: 18 });
+                    t.text(c, 856, 300, (scroll + 1) + '-' + Math.min(scroll + ROWS, list.length) + ' / ' + list.length, { size: 16, color: '#8899bb' });
+                }
             }
         });
         music._viewList = [];
         music._viewCursor = -1;
+        music._scroll = 0;
 
         // Music list browsing state
         let musicView = null; // null | 'library' | 'queue'
 
-        // Static control regions (indices 0-5)
+        // Static control regions (indices 0-5), plus scroll regions 6-7
         const CTRL_REGIONS = [
             { x: 40 / 1024, y: 100 / 640, w: 120 / 1024, h: 64 / 640, action: 'prev' },
             { x: 170 / 1024, y: 100 / 640, w: 220 / 1024, h: 64 / 640, action: 'toggle' },
@@ -370,6 +426,8 @@
             { x: 530 / 1024, y: 100 / 640, w: 120 / 1024, h: 64 / 640, action: 'shuffle' },
             { x: 660 / 1024, y: 100 / 640, w: 160 / 1024, h: 64 / 640, action: 'library' },
             { x: 830 / 1024, y: 100 / 640, w: 150 / 1024, h: 64 / 640, action: 'queue' },
+            { x: 856 / 1024, y: 184 / 640, w: 128 / 1024, h: 44 / 640, action: 'scrollup' },
+            { x: 856 / 1024, y: 240 / 640, w: 128 / 1024, h: 44 / 640, action: 'scrolldown' },
         ];
 
         function buildMusicList(view) {
@@ -379,13 +437,15 @@
         }
 
         function rebuildRegions() {
-            // Rebuild the region map: static controls + one region per visible list row.
+            // Rebuild the region map: static controls + scroll, then one region per visible list row.
             const list = music._viewList || [];
-            const rows = list.slice(0, 5);
+            const scroll = music._scroll || 0;
+            const ROWS = 4;
             const regions = CTRL_REGIONS.slice();
-            rows.forEach((item, i) => {
+            list.slice(scroll, scroll + ROWS).forEach((item, i) => {
                 const y = 184 + i * 46;
-                regions.push({ x: 40 / 1024, y: y / 640, w: (1024 - 80) / 1024, h: 38 / 640, action: 'list:' + i });
+                const abs = scroll + i;
+                regions.push({ x: 40 / 1024, y: y / 640, w: (1024 - 130) / 1024, h: 38 / 640, action: 'list:' + abs });
             });
             musicPanel.setRegions(regions);
         }
@@ -394,6 +454,7 @@
             musicView = view;
             music._viewList = buildMusicList(view);
             music._viewCursor = music._viewList.length ? 0 : -1;
+            music._scroll = 0;
             rebuildRegions();
             musicPanel.redraw();
         }
@@ -405,14 +466,24 @@
             else if (action === 'shuffle') music.toggleShuffle();
             else if (action === 'library') { applyMusicView(musicView === 'library' ? null : 'library'); }
             else if (action === 'queue') { applyMusicView(musicView === 'queue' ? null : 'queue'); }
+            else if (action === 'scrollup') {
+                music._scroll = Math.max(0, (music._scroll || 0) - 4);
+                rebuildRegions(); musicPanel.redraw();
+            }
+            else if (action === 'scrolldown') {
+                const max = Math.max(0, (music._viewList || []).length - 4);
+                music._scroll = Math.min(max, (music._scroll || 0) + 4);
+                rebuildRegions(); musicPanel.redraw();
+            }
             else if (action && action.startsWith('list:')) {
                 const i = parseInt(action.slice(5), 10);
                 const list = music._viewList || [];
                 const item = list[i];
                 if (!item) return;
                 if (musicView === 'library' && item.track) {
+                    // Add and immediately play so there is clear audible feedback.
                     music.addToQueue(item.track);
-                    if (!music.isPlaying) music.play();
+                    music.playTrack(music.queue.length - 1);
                 } else if (musicView === 'queue' && item.idx != null) {
                     music.playTrack(item.idx);
                 }
@@ -492,6 +563,7 @@
             if (res.regionIdx != null && res.regionIdx >= 0) {
                 const action = res.panel.regions[res.regionIdx].action;
                 if (res.panel === musicPanel) musicAction(action);
+                else if (action === 'supersonic') showSuperSonicLaunch();
                 else if (action) window[action] && window[action]();
             }
         }
@@ -561,7 +633,8 @@
         renderer.domElement.addEventListener('wheel', (e) => {
             if (renderer.xr.isPresenting) return;
             e.preventDefault();
-            cameraZoom = THREE.MathUtils.clamp(cameraZoom + (e.deltaY > 0 ? 0.15 : -0.15), ZOOM_MIN, ZOOM_MAX);
+            // scroll up (deltaY < 0) = zoom in; scroll down = zoom out
+            cameraZoom = THREE.MathUtils.clamp(cameraZoom + (e.deltaY < 0 ? 0.15 : -0.15), ZOOM_MIN, ZOOM_MAX);
             applyCamera();
         }, { passive: false });
 
@@ -571,8 +644,8 @@
             const step = 0.08;
             if (e.key === 'ArrowLeft') stage.rotation.y += GRAB_DIR * step;
             else if (e.key === 'ArrowRight') stage.rotation.y -= GRAB_DIR * step;
-            else if (e.key === 'ArrowUp') { cameraZoom = THREE.MathUtils.clamp(cameraZoom - step, ZOOM_MIN, ZOOM_MAX); applyCamera(); }
-            else if (e.key === 'ArrowDown') { cameraZoom = THREE.MathUtils.clamp(cameraZoom + step, ZOOM_MIN, ZOOM_MAX); applyCamera(); }
+            else if (e.key === 'ArrowUp') { cameraZoom = THREE.MathUtils.clamp(cameraZoom + step, ZOOM_MIN, ZOOM_MAX); applyCamera(); }
+            else if (e.key === 'ArrowDown') { cameraZoom = THREE.MathUtils.clamp(cameraZoom - step, ZOOM_MIN, ZOOM_MAX); applyCamera(); }
         });
 
         function updatePointerHover(e) {
@@ -598,9 +671,10 @@
             if (hits.length) {
                 const panel = hits[0].object.userData.panel;
                 const regionIdx = regionAt(panel, hits[0].uv);
-                if (panel === musicPanel && regionIdx >= 0) {
-                    musicAction(panel.regions[regionIdx].action);
-                }
+                if (regionIdx < 0) return;
+                const action = panel.regions[regionIdx].action;
+                if (panel === musicPanel) musicAction(action);
+                else if (action === 'supersonic') showSuperSonicLaunch();
             }
         }
 
@@ -637,6 +711,26 @@
         }
         enter3D.addEventListener('click', () => { overlay.style.display = 'none'; });
         exitXR.addEventListener('click', () => { if (renderer.xr.getSession()) renderer.xr.getSession().end(); });
+
+        // ---- SuperSonic launch (confirm -> open in new tab) ----
+        const roOverlay = document.getElementById('redirect-overlay');
+        const roGo = document.getElementById('ro-go');
+        const roCancel = document.getElementById('ro-cancel');
+        const SUPERSONIC_URL = 'https://jpalmer95.github.io/SuperSonic/';
+        function showSuperSonicLaunch() {
+            // In immersive VR the DOM overlay is hidden, so end the XR session
+            // first — the confirm dialog then appears on the 2D passthrough.
+            if (renderer.xr.isPresenting && renderer.xr.getSession()) {
+                renderer.xr.getSession().end().catch(() => {});
+            }
+            roOverlay.classList.add('show');
+        }
+        roCancel.addEventListener('click', () => roOverlay.classList.remove('show'));
+        roGo.addEventListener('click', () => {
+            // Open in a new tab (works from both desktop and the VR browser).
+            window.open(SUPERSONIC_URL, '_blank');
+            roOverlay.classList.remove('show');
+        });
 
         // ---------------------------------------------------------------------
         // Animation loop
