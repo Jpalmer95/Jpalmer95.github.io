@@ -142,9 +142,6 @@
                 <a href="#projects" class="px-8 py-3 bg-accent hover:bg-accent-hover text-white rounded-full font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 whitespace-nowrap">
                     <i class="fas fa-code"></i> View My Projects
                 </a>
-                <a href="xr.html" id="enter-xr-btn" class="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full font-semibold transition-all shadow-lg shadow-purple-500/30 flex items-center justify-center gap-2 whitespace-nowrap">
-                    🥽 Enter XR
-                </a>
                 <a href="#contact" class="px-8 py-3 bg-dark-card hover:bg-dark-lighter border border-gray-700 text-white rounded-full font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap">
                     Contact Me
                 </a>
@@ -543,23 +540,19 @@
             window.jkMusicDock = new MusicDock(window.jkMusic);
         })();
 
-        // XR capability detection — surface the right hint next to the button
+        // XR capability detection — surface the right hint
         (function () {
             const hint = document.getElementById('xr-hint');
-            const btn = document.getElementById('enter-xr-btn');
             if (!('xr' in navigator)) {
                 if (hint) hint.textContent = 'XR requires a WebXR headset (e.g. Meta Quest). Opens in desktop 3D mode here.';
-                if (btn) btn.textContent = '🥽 Enter 3D';
                 return;
             }
             navigator.xr.isSessionSupported('immersive-vr').then(function (ok) {
                 if (hint) hint.textContent = ok
-                    ? '🥽 Headset detected — dive into the immersive portfolio!'
+                    ? '🥽 Headset detected — use the XR link above to dive into the immersive portfolio!'
                     : 'No headset detected — the XR page will open in desktop 3D mode.';
-                if (btn && !ok) btn.textContent = '🥽 Enter 3D';
             }).catch(function () {
                 if (hint) hint.textContent = 'No headset detected — the XR page will open in desktop 3D mode.';
-                if (btn) btn.textContent = '🥽 Enter 3D';
             });
         })();
     </script>
