@@ -374,6 +374,15 @@
         expPanel.setRegions([]);
 
         // ----- Panel: Music (interactive) -----
+        // State must be declared BEFORE the panel is constructed, because the
+        // Panel constructor calls redraw() (which runs draw()) immediately, and
+        // draw() reads these. Declaring them after causes a TDZ ReferenceError
+        // that silently kills the whole module (no 3D render, dead buttons).
+        music._viewList = [];
+        music._viewCursor = -1;
+        music._scroll = 0;
+        let musicView = null; // null | 'library' | 'queue'
+
         const musicPanel = new Panel({
             title: 'Music', width: 1.9, height: 1.4,
             draw(c, w, h) {
@@ -411,12 +420,9 @@
                 }
             }
         });
-        music._viewList = [];
-        music._viewCursor = -1;
-        music._scroll = 0;
 
-        // Music list browsing state
-        let musicView = null; // null | 'library' | 'queue'
+        // Music list browsing state (musicView, _viewList, _scroll now declared
+        // above, before panel construction — see note there).
 
         // Static control regions (indices 0-5), plus scroll regions 6-7
         const CTRL_REGIONS = [
