@@ -19,7 +19,7 @@ This is the primary digital presence for **Jonathan Korstad** — Senior Accessi
 ## Features
 
 - **Responsive Design** — Mobile-first layout that scales from phone to desktop
-- **Accessibility First** — Built by a CPWA (Certified Professional in Web Accessibility). High contrast ratios, keyboard-navigable, semantic landmarks
+- **Accessibility First** — High contrast ratios, keyboard-navigable, semantic landmarks
 - **Dark Mode Aesthetic** — `#121212` base with accent blue (`#007bff`)
 - **Sticky Navigation** — Smooth-scroll to sections
 - **Project Showcase** — Featured work with external links to GitHub, Hugging Face, and live deployments
@@ -27,12 +27,12 @@ This is the primary digital presence for **Jonathan Korstad** — Senior Accessi
 
 ## Sections
 
-1. **Hero** — Name, title, CPWA credential, and primary CTAs (Projects, Resume PDF, Contact, XR)
+1. **Hero** — Name, title, and primary CTAs (Projects, Resume PDF, Contact, XR)
 2. **About** — Forward-deployed & Applied AI Engineering summary, PIN on Glass, A11y SnapCheck, Hermes Agent ecosystem, and 0-to-1 founder story
 3. **Technical Skills** — 6-category breakdown: AI Agents/MCP/Evals, ML/RL/Multimodal GenAI, Full-Stack & Systems Dev, Data/Cloud/Self-Hosted Infra, Sim/XR/Game Engines, and Accessibility & 0-to-1 Practice
 4. **Professional Experience** — Visa, Kynda Coffee, MicroAssist
-5. **Featured Projects** — SynapseJourney, MenuMetrics, ForgeDNA & HermesForge, Daggr Studio & Pipelines, AllergoScope, Harmonia, GetFreeQuotes, SuperSonic & Oracle VR, Agent Oracle, PageVoice & LVL-2-Rogue, Account-It & Doge Gumball, Lakehouse-AI / GaitLab / Deep RL, Kynda Infrastructure
-6. **Education & Certifications** — UT Austin, Fast.ai, Texas A&M, CPWA, Hugging Face Deep RL Honors
+5. **Featured Projects** — SynapseJourney, MenuMetrics, ForgeDNA & HermesForge, Daggr Studio & Pipelines, AllergoScope, Harmonia, GetFreeQuotes, SuperSonic & Oracle VR, Agent Oracle, PageVoice & LVL-2-Rogue, Account-It & Doge Gumball, Lakehouse-AI / Deep RL & SFT, Kynda Infrastructure
+6. **Education & Certifications** — UT Austin, Fast.ai, Texas A&M, Hugging Face Deep RL Honors
 7. **Hermes Agent Ecosystem & Open-Source Skills** — `game-3d-asset-skills`, `gradio-app-development`, `synapse-learn`, `hermes-security-watch`, `suno-studio` / `harmonia-music`, `cc0-asset-index`, and upstream PRs to `NousResearch/hermes-agent`
 8. **Kynda Coffee** — Business highlight with direct links
 9. **Contact** — Resume, Email, LinkedIn, Support, and Phone links
@@ -80,7 +80,7 @@ git push origin main
 | **Agent Oracle** | [GitHub](https://github.com/Jpalmer95/Agent-Oracle) | High-performance Rust data oracle with Lightning Network L402 microtransactions |
 | **PageVoice & LVL-2-Rogue** | [GitHub](https://github.com/Jpalmer95/pagevoice) | Local GPU TTS / voice-cloning browser extension + unified multimodal `daggr` Space |
 | **Account-It & Doge Gumball** | [GitHub](https://github.com/Jpalmer95/Account-It) | Agent-native Beancount accounting + provably fair on-chain Dogecoin CC0 asset machine |
-| **Lakehouse-AI, GaitLab & DRL** | [GitHub](https://github.com/Jpalmer95/gait-lab) | Spark/Iceberg/Kafka/pgvector lakehouse, SLEAP video biomechanics & multi-agent Deep RL |
+| **Lakehouse-AI, Deep RL & SFT** | [HF](https://huggingface.co/jkorstad) | Spark/Iceberg/Kafka/pgvector lakehouse, multi-agent Deep RL (HF Honors) & SmolLM3 SFT |
 | **Kynda Coffee** | [Website](https://www.kyndacoffee.com) | Specialty coffee roastery, Next.js 16 e-commerce & Hermes Agent operations automation |
 
 ## License
