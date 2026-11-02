@@ -280,16 +280,16 @@
             draw(c, w, h) {
                 const t = this;
                 t.text(c, 40, 30, 'JONATHAN KORSTAD, CPWA', { size: 34, weight: 700, color: '#fff' });
-                t.text(c, 40, 80, 'Senior Accessibility Analyst & AI Engineer', { size: 26, color: '#4da3ff' });
+                t.text(c, 40, 80, 'Forward Deployed & Applied AI Engineer', { size: 26, color: '#4da3ff' });
                 t.text(c, 40, 140,
-                    'Building scalable intelligent systems and bridging digital\naccessibility with AI. Founder of Kynda Coffee. Deep RL,\ngenerative 3D/audio, and agents for automation.',
-                    { size: 24, lh: 1.4, color: '#c6d0e0' });
+                    'Invented PIN on Glass & A11y SnapCheck at Visa.\nShipping Hermes Agent skills, MCP servers, VLM platforms,\ngenerative 3D pipelines (ForgeDNA/HermesForge), and\n0-to-1 products (Kynda Coffee, SynapseJourney, MenuMetrics).',
+                    { size: 23, lh: 1.4, color: '#c6d0e0' });
             }
         });
         aboutPanel.setRegions([]);
 
         // ----- Panel: Skills -----
-        const skills = ['Deep RL', 'PyTorch', 'LangChain', 'Smolagents', 'Generative 3D/Audio', 'Python', 'C++', 'React', 'Unreal', 'Godot', 'Accessibility', 'Computer Vision'];
+        const skills = ['Hermes Agent', 'MCP & Evals', 'VLMs', 'Deep RL', 'PyTorch / TRL', 'Generative 3D', 'Daggr / Gradio 6', 'Python', 'TypeScript / Next.js', 'Rust', 'Godot 4.7 / WebXR', 'Accessibility'];
         const skillsPanel = new Panel({
             title: 'Skills', width: 1.8, height: 1.0,
             draw(c, w, h) {
@@ -313,12 +313,12 @@
 
         // ----- Panel: Projects -----
         const projects = [
-            { name: 'ForgeDNA', desc: 'AI game-dev pipeline (17 agents)', link: null },
-            { name: 'MenuMetrics', desc: 'Recipe costing & inventory SaaS', link: null },
-            { name: 'SynapseJourney', desc: 'Open-source learning platform', link: null },
+            { name: 'SynapseJourney', desc: 'Polymath learning, 3D RAG & MCP', link: null },
+            { name: 'ForgeDNA & Forge', desc: 'Gen 3D + Godot 4.7 MCP editor', link: null },
+            { name: 'Daggr Studio', desc: 'Self-healing Gradio 6 DAG studio', link: null },
             { name: 'SuperSonic', desc: 'WebXR VR flight/combat game', link: 'https://jpalmer95.github.io/SuperSonic/', play: true },
-            { name: 'Agent Oracle', desc: 'Rust data oracle w/ L402', link: null },
-            { name: 'GetFreeQuote', desc: 'Next.js services marketplace', link: null },
+            { name: 'MenuMetrics', desc: 'Gram-level costing & Agent API', link: null },
+            { name: 'AllergoScope / Rust', desc: 'Open science & Harmonia FM DSP', link: null },
         ];
         const projectsPanel = new Panel({
             title: 'Projects', width: 1.9, height: 1.3,
@@ -360,7 +360,7 @@
                 t.text(c, 40, 30, 'EXPERIENCE', { size: 30, weight: 700, color: '#fff' });
                 const rows = [
                     ['Visa — Sr Accessibility Analyst & AI Engineer', '2022 – Present'],
-                    ['Kynda Coffee — Founder & Owner', '2020 – Present'],
+                    ['Kynda Coffee — Founder, Owner & Builder', '2019 – Present'],
                     ['MicroAssist — Accessibility Analyst', '2021 – 2022'],
                 ];
                 rows.forEach((r, i) => {
