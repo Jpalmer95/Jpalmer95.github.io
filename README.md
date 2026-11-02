@@ -28,7 +28,7 @@ This is the primary digital presence for **Jonathan Korstad** — Senior Accessi
 ## Sections
 
 1. **Hero** — Name, title, and primary CTAs (Projects, Resume PDF, Contact, XR)
-2. **About** — Forward-deployed & Applied AI Engineering summary, PIN on Glass, A11y SnapCheck, Hermes Agent ecosystem, and 0-to-1 founder story
+2. **About** — Applied AI & Full-Stack generalist summary across enterprise engineering, entrepreneurship, open science, gaming/XR, PIN on Glass, A11y SnapCheck, and Hermes Agent ecosystem
 3. **Technical Skills** — 6-category breakdown: AI Agents/MCP/Evals, ML/RL/Multimodal GenAI, Full-Stack & Systems Dev, Data/Cloud/Self-Hosted Infra, Sim/XR/Game Engines, and Accessibility & 0-to-1 Practice
 4. **Professional Experience** — Visa, Kynda Coffee, MicroAssist
 5. **Featured Projects** — SynapseJourney, MenuMetrics, ForgeDNA & HermesForge, Daggr Studio & Pipelines, AllergoScope, Harmonia, GetFreeQuotes, SuperSonic & Oracle VR, Agent Oracle, PageVoice & LVL-2-Rogue, Account-It & Doge Gumball, Lakehouse-AI / Deep RL & SFT, Kynda Infrastructure
