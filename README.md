@@ -74,7 +74,7 @@ git push origin main
 | **ForgeDNA & HermesForge** | [GitHub](https://github.com/Jpalmer95/ForgeDNA) | Generative 3D asset compiler + Hermes-native Godot 4.7 editor distribution & 21-tool MCP bridge |
 | **Daggr Studio & Pipelines** | [HF Space](https://huggingface.co/spaces/jkorstad/daggr-studio) | Self-healing visual Gradio 6 / `daggr` workflow studio with live-probed HF Space registry |
 | **AllergoScope** | [Live](https://jpalmer95.github.io/allergoscope/) | Open-science research workbench for latex-fruit syndrome & post-harvest agrochemical handling |
-| **Harmonia** | [GitHub](https://github.com/Jpalmer95/harmonia) | 6-operator FM matrix synth, symbolic math DSP VM & multiline chord studio in pure Rust |
+| **Harmonia** | [Listen](https://jpalmer95.github.io/harmonia/samples/) · [GitHub](https://github.com/Jpalmer95/harmonia) | 6-operator FM matrix synth, symbolic math DSP VM & multiline chord studio in pure Rust |
 | **GetFreeQuote** | [Live](https://getfreequote.org/) | Industry-agnostic Next.js 16 + Supabase marketplace for quotes and services |
 | **SuperSonic & Oracle VR** | [Play](https://jpalmer95.github.io/SuperSonic/) | Browser WebXR flight/combat sim + Godot 4.7 OpenXR/Jolt VR physics sandbox |
 | **Agent Oracle** | [GitHub](https://github.com/Jpalmer95/Agent-Oracle) | High-performance Rust data oracle with Lightning Network L402 microtransactions |
