@@ -233,8 +233,11 @@
         @keyframes jk-pulse { 0%,100%{box-shadow:0 8px 24px rgba(0,123,255,.4)} 50%{box-shadow:0 8px 32px rgba(0,123,255,.8)} }
         .jk-music-panel { position: absolute; right:0; bottom:64px; width: 320px; max-height: 70vh; background: rgba(18,18,18,.96); border:1px solid rgba(255,255,255,.08); border-radius:14px; backdrop-filter: blur(12px); box-shadow: 0 16px 48px rgba(0,0,0,.6); display:none; flex-direction:column; overflow:hidden; }
         .jk-music-panel.open { display:flex; }
-        .jk-music-head { padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:space-between; }
+        .jk-music-head { padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .jk-music-head-left { display:flex; align-items:center; gap:8px; }
         .jk-music-head h4 { margin:0; font-size:14px; color:#fff; letter-spacing:.3px; }
+        .jk-music-suno { font-size:11px; color:#6db7ff; background:rgba(0,123,255,.12); border:1px solid rgba(0,123,255,.3); padding:2px 8px; border-radius:999px; text-decoration:none; font-weight:500; transition:all .15s; }
+        .jk-music-suno:hover { background:#007bff; color:#fff; border-color:#007bff; }
         .jk-music-close { background:none; border:none; color:#888; cursor:pointer; font-size:18px; }
         .jk-music-close:hover { color:#fff; }
         .jk-music-now { padding:10px 16px; color:#b3b3b3; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -246,7 +249,11 @@
         .jk-music-vol { display:flex; align-items:center; gap:8px; padding:0 16px 12px; color:#888; font-size:12px; }
         .jk-music-vol input { flex:1; accent-color:#007bff; }
         .jk-music-scroll { overflow-y:auto; padding:0 16px 16px; }
-        .jk-music-scroll label { display:block; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#666; margin:10px 0 6px; }
+        .jk-music-sec-head { display:flex; align-items:center; justify-content:space-between; margin:10px 0 6px; }
+        .jk-music-sec-head label, .jk-music-scroll > label { display:block; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#666; margin:0; }
+        .jk-music-scroll > label { margin:10px 0 6px; }
+        .jk-music-sec-btn { background:none; border:1px solid #3a3a3a; color:#9aa; border-radius:6px; font-size:10px; padding:2px 7px; cursor:pointer; }
+        .jk-music-sec-btn:hover { background:#007bff; color:#fff; border-color:#007bff; }
         .jk-music-item { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:8px; background:#1e1e1e; margin-bottom:6px; cursor:pointer; font-size:12px; color:#e0e0e0; }
         .jk-music-item:hover { background:#2a2a2a; }
         .jk-music-item .jk-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -271,7 +278,13 @@
       root.innerHTML = `
         <button class="jk-music-toggle" title="Music" aria-label="Open music player">♪</button>
         <div class="jk-music-panel">
-          <div class="jk-music-head"><h4>Music</h4><button class="jk-music-close">✕</button></div>
+          <div class="jk-music-head">
+            <div class="jk-music-head-left">
+              <h4>Music Radio</h4>
+              <a class="jk-music-suno" href="https://suno.com/@conflagrantmacarena2312118" target="_blank" rel="noopener" title="Listen on Suno (@conflagrantmacarena2312118)">Suno ↗</a>
+            </div>
+            <button class="jk-music-close" aria-label="Close music player">✕</button>
+          </div>
           <div class="jk-music-now">—</div>
           <div class="jk-music-controls">
             <button data-act="prev" title="Previous">⏮</button>
@@ -281,9 +294,15 @@
           </div>
           <div class="jk-music-vol"><span>Vol</span><input type="range" min="0" max="100" step="1"><span class="jk-music-volval">60</span></div>
           <div class="jk-music-scroll">
-            <label>Library</label>
+            <div class="jk-music-sec-head">
+              <label data-role="lib-label">Library</label>
+              <button class="jk-music-sec-btn" data-act="queue-all" title="Add all library tracks to queue">+ Queue All</button>
+            </div>
             <div data-role="library"></div>
-            <label>Queue</label>
+            <div class="jk-music-sec-head">
+              <label data-role="q-label">Queue</label>
+              <button class="jk-music-sec-btn" data-act="clear-q" title="Clear queue">Clear</button>
+            </div>
             <div data-role="queue"></div>
             <button class="jk-music-upload">📂 Upload MP3s</button>
             <input type="file" accept="audio/*" multiple style="display:none">
@@ -299,6 +318,13 @@
       root.querySelector('[data-act="next"]').addEventListener('click', () => this.player.playNext());
       root.querySelector('[data-act="prev"]').addEventListener('click', () => this.player.playPrev());
       root.querySelector('[data-act="shuffle"]').addEventListener('click', () => this.player.toggleShuffle());
+      root.querySelector('[data-act="queue-all"]').addEventListener('click', () => {
+        const existingUrls = new Set(this.player.queue.map((t) => t.url));
+        this.player.library.forEach((t) => {
+          if (!existingUrls.has(t.url)) this.player.addToQueue(t);
+        });
+      });
+      root.querySelector('[data-act="clear-q"]').addEventListener('click', () => this.player.clearQueue());
       const vol = root.querySelector('input[type="range"]');
       vol.addEventListener('input', () => this.player.setVolume(vol.value / 100));
       root.querySelector('.jk-music-upload').addEventListener('click', () => root.querySelector('input[type="file"]').click());
@@ -320,16 +346,28 @@
       this.root.querySelector('.jk-music-volval').textContent = Math.round(p.volume * 100);
 
       // Library
+      const libLabel = this.root.querySelector('[data-role="lib-label"]');
+      if (libLabel) libLabel.textContent = p.library.length ? `Library (${p.library.length})` : 'Library';
+      const qLabel = this.root.querySelector('[data-role="q-label"]');
+      if (qLabel) qLabel.textContent = p.queue.length ? `Queue (${p.queue.length})` : 'Queue';
       const lib = this.root.querySelector('[data-role="library"]');
       if (!p.library.length) {
         lib.innerHTML = '<div class="jk-music-empty">Loading library…</div>';
       } else {
         lib.innerHTML = p.library.map((t, i) => `
-          <div class="jk-music-item">
+          <div class="jk-music-item" data-lib-play="${i}" title="Click to play, or + to queue">
             <span class="jk-name">${this._esc(t.name)}</span>
-            <div class="jk-acts"><button class="jk-music-add" data-add="${i}">+</button></div>
+            <div class="jk-acts"><button class="jk-music-add" data-add="${i}" title="Add to queue">+</button></div>
           </div>`).join('');
         lib.querySelectorAll('[data-add]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); this.player.addToQueue(p.library[+b.dataset.add]); }));
+        lib.querySelectorAll('[data-lib-play]').forEach((row) => row.addEventListener('click', (e) => {
+          if (e.target.tagName === 'BUTTON') return;
+          const tr = p.library[+row.dataset.libPlay];
+          if (!tr) return;
+          const idx = p.queue.findIndex((q) => q.url === tr.url);
+          if (idx >= 0) this.player.playTrack(idx);
+          else { this.player.addToQueue(tr); this.player.playTrack(p.queue.length - 1); }
+        }));
       }
 
       // Queue
